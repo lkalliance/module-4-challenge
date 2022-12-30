@@ -1,3 +1,59 @@
 * {
-    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
+
+body {
+    font-size: 16px;
+    padding: 10px;
+}
+
+h1 {
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+
+/* ---- HEADER STYLES ---- */
+
+header {
+    display: flex;
+    justify-content: space-evenly;
+    font-size: .75em;
+}
+
+header div {
+    flex: 1 1 200px;
+}
+
+header div#timer {
+    text-align: right;
+}
+
+
+/* ---- MAIN CONTENT STYLES ---- */
+
+main {
+    margin: 0 30px;
+}
+
+main section,
+main aside,
+main ol,
+main h1 {
+    display: none;
+}
+
+
+
+
+main .visible {
+    display: block;
+}
+

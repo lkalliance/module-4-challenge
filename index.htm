@@ -6,16 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./assets/CSS/normalize.css">
     <link rel="stylesheet" href="./assets/CSS/styles.css">
+    <script src="./assets/javascript/jquery-3.6.3.min.js"></script>
     <title>Coding Quiz Challenge</title>
 </head>
 <body>
     <header>
         <div id="viewScores"><a href="">View High Scores</a></div>
-        <div id="timer">this is the timer</div>
+        <div id="timer">You will have 90 seconds</div>
     </header>
     <main>
-        <h1 id="title" class="visible">Coding Quiz Challenge</h1>
-        <section id="quiz" class="visible">
+        <section id="startQuiz" class="visible">
+            <h1 id="title" class="visible">Coding Quiz Challenge</h1>
+            <button id="startQuiz">start the quiz</button>
+        </section>
+        <section id="quiz">
             <h2 id="question">
                 This is a question
             </h2>

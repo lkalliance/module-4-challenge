@@ -45,8 +45,7 @@ main {
 
 main section,
 main aside,
-main ol,
-main h1 {
+main ol {
     display: none;
 }
 

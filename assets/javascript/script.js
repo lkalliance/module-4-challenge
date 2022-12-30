@@ -10,6 +10,8 @@ let start = document.querySelector("#startQuiz");   // "Start Quiz" button
 
 let timeRemaining = 90;     // Clock starts at this time
 
+console.log(quizQs);
+
 start.addEventListener("click", function() {
     startQuiz();
     let mainTimer = setInterval( countdown, 1000);

@@ -1,10 +1,10 @@
 // GRAB VARIOUS CONTAINERS
 // div that contains the time remaining
-let header = document.querySelector("#startQuiz");  // header and start button
-let quiz = document.querySelector("#quiz");         // quiz section
-let start = document.querySelector("#startBtn");    // "Start Quiz" button
+const header = document.querySelector("#startQuiz");  // header and start button
+const quiz = document.querySelector("#quiz");         // quiz section
+const start = document.querySelector("#startBtn");    // "Start Quiz" button
 
-let timeRemaining = 90;     // Clock starts at this time
+const startingTime = 90;     // Clock starts at this time
 
 
 start.addEventListener("click", function() {
@@ -19,7 +19,7 @@ function takeQuiz() {
     // Declare some variables to scope them for this function
     let mainTimer;                                      // variable to hold setInterval
     let shuffledQs = shuffleMe(quizQs);                 // shuffle the questions
-    let timeRemaining = 20;                             // initialize the timer
+    let timeRemaining = startingTime;                             // initialize the timer
     let questionNumber = 0;                             // tracks what question we're on
     let timer = document.querySelector("#timer");       // countdown clock
     let question = document.querySelector("#question"); // quiz question
@@ -73,7 +73,9 @@ function takeQuiz() {
 
 
     initQuiz();
-    newQ(shuffledQs[0]);       // start the quiz by calling the first question
+    // Start the quiz by calling the first question
+    newQ(shuffledQs[0]);
+
 
 
     /* FUNCTION DECLARATIONS */
@@ -102,10 +104,9 @@ function takeQuiz() {
         let optionLI;
         for (let i = 0; i < shuffledOpts.length; i++) {
             optionLI = document.createElement("LI");
-            optionLI.textContent = shuffledOpts[i];
+            optionLI.textContent = shuffledOpts[i].text;
             options.appendChild(optionLI);
-            if (i == q.correct) {
-                optionLI.textContent = "This is the correct answer";
+            if (shuffledOpts[i].correct) {
                 optionLI.addEventListener("click", correctAnswer);
             } else {
                 optionLI.addEventListener("click", wrongAnswer); 

@@ -18,13 +18,13 @@ start.addEventListener("click", function() {
 function takeQuiz() {
     // Declare some variables to scope them for this function
     let mainTimer;                                      // variable to hold setInterval
-    let shuffledQs = shuffleMe(quizQs);                 // shuffle the questions
-    let timeRemaining = startingTime;                             // initialize the timer
+    let timeRemaining = startingTime;                   // initialize the timer
     let questionNumber = 0;                             // tracks what question we're on
-    let timer = document.querySelector("#timer");       // countdown clock
-    let question = document.querySelector("#question"); // quiz question
-    let options = document.querySelector("#options");   // quiz answers
-    let result = document.querySelector("#result");     // result indicator
+    let totalRight = 0;                                 // tracks how many correct answers
+    const timer = document.querySelector("#timer");       // countdown clock
+    const question = document.querySelector("#question"); // quiz question
+    const options = document.querySelector("#options");   // quiz answers
+    const result = document.querySelector("#result");     // result indicator
 
 
     
@@ -43,14 +43,15 @@ function takeQuiz() {
     // Function for when a user answers a question correctly
     let correctAnswer = function(e) {
         e.preventDefault();
+        totalRight++;
         console.log("correct!");
-        if( (questionNumber + 1) == shuffledQs.length) {
+        if( (questionNumber + 1) == quizQs.length) {
             // this was the last question
             endQuiz();
         }
         else {
             questionNumber++;
-            newQ(shuffledQs[questionNumber]);
+            newQ(quizQs[questionNumber]);
         }
     }
     
@@ -58,23 +59,22 @@ function takeQuiz() {
     let wrongAnswer = function(e) {
         e.preventDefault();
         console.log("wrong!");
-        if( (questionNumber + 1) == shuffledQs.length) {
+        if( (questionNumber + 1) == quizQs.length) {
             // this was the last question
             endQuiz();
         }
         else {
             questionNumber++;
-            newQ(shuffledQs[questionNumber]);
+            newQ(quizQs[questionNumber]);
         }
     }
 
     /* END FUNCTION EXPRESSIONS */
 
-
-
+    shuffleMe(quizQs);
     initQuiz();
     // Start the quiz by calling the first question
-    newQ(shuffledQs[0]);
+    newQ(quizQs[0]);
 
 
 
@@ -91,6 +91,7 @@ function takeQuiz() {
     
     // Put a new question on the screen
     function newQ(q) {
+
         // Put in the new question text
         question.textContent = q.question;
         
@@ -98,15 +99,15 @@ function takeQuiz() {
         $(options).empty();
 
         // shuffle the questions answer options
-        let shuffledOpts = shuffleMe(q.options);
+        shuffleMe(q.options);
                 
         // create li for each option and put them in an array
         let optionLI;
-        for (let i = 0; i < shuffledOpts.length; i++) {
+        for (let i = 0; i < q.options.length; i++) {
             optionLI = document.createElement("LI");
-            optionLI.textContent = shuffledOpts[i].text;
+            optionLI.textContent = q.options[i].text;
             options.appendChild(optionLI);
-            if (shuffledOpts[i].correct) {
+            if (q.options[i].correct) {
                 optionLI.addEventListener("click", correctAnswer);
             } else {
                 optionLI.addEventListener("click", wrongAnswer); 
@@ -115,10 +116,15 @@ function takeQuiz() {
     }
 
     // Functions that tidies up after the quiz is over
-    function endQuiz() {
+    function endQuiz(finished) {
         // stop the timer
         clearInterval(mainTimer);
         console.log("All done!");
+        question.textContent = ((timeRemaining)?"You finished all the questions":"You ran out of time") + " and you got " + totalRight + " correct.";
+        if (finished) {
+            $(options).empty();
+        }
+        console.log("You got " + totalRight + " correct!");
 
         // remove event listeners from all option buttons
         let opts = options.getElementsByTagName("LI");
@@ -136,15 +142,16 @@ function takeQuiz() {
         return timeString;
     }
 
-    // Utility that takes an array and shuffles it
     function shuffleMe(arr) {
-        let oldArr = arr;
-        let newArr = [];
-        while (oldArr.length>0) {
-            // take a random element from the old array, push it onto the new one
-            newArr.push(oldArr.splice((Math.floor(Math.random()*oldArr.length)),1)[0]);
+        let counter = arr.length;
+        let rand, temp;
+        while (counter > 0) {
+            rand = Math.floor(Math.random() * counter);
+            counter--;
+            temp = arr[counter];
+            arr[counter] = arr[rand];
+            arr[rand] = temp;
         }
-        return newArr;
     }
  
     /* END FUNCTION DECLARATIONS */

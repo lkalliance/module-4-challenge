@@ -17,10 +17,10 @@ start.addEventListener("click", function() {
 
 function takeQuiz() {
     // Declare some variables to scope them for this function
-    let mainTimer;                                      // variable to hold setInterval
-    let timeRemaining = startingTime;                   // initialize the timer
-    let questionNumber = 0;                             // tracks what question we're on
-    let totalRight = 0;                                 // tracks how many correct answers
+    let mainTimer;                                        // variable to hold setInterval
+    let timeRemaining = startingTime;                     // initialize the timer
+    let questionNumber = 0;                               // tracks what question we're on
+    let totalRight = 0;                                   // tracks how many correct answers
     const timer = document.querySelector("#timer");       // countdown clock
     const question = document.querySelector("#question"); // quiz question
     const options = document.querySelector("#options");   // quiz answers
@@ -43,6 +43,7 @@ function takeQuiz() {
     // Function for when a user answers a question correctly
     let correctAnswer = function(e) {
         e.preventDefault();
+        quizQs[questionNumber].options[e.target.dataset.nth].clicked=true;
         totalRight++;
         console.log("correct!");
         if( (questionNumber + 1) == quizQs.length) {
@@ -58,6 +59,7 @@ function takeQuiz() {
     // Function for when a user answers a question incorrectly
     let wrongAnswer = function(e) {
         e.preventDefault();
+        quizQs[questionNumber].options[e.target.dataset.nth].clicked=true;
         console.log("wrong!");
         if( (questionNumber + 1) == quizQs.length) {
             // this was the last question
@@ -98,15 +100,17 @@ function takeQuiz() {
         // empty the options list
         $(options).empty();
 
-        // shuffle the questions answer options
+        // shuffle the question's answer options
         shuffleMe(q.options);
                 
-        // create li for each option and put them in an array
+        // create li for each option, add text and listener
         let optionLI;
         for (let i = 0; i < q.options.length; i++) {
             optionLI = document.createElement("LI");
             optionLI.textContent = q.options[i].text;
+            optionLI.setAttribute("data-nth",i);
             options.appendChild(optionLI);
+            // check if this is the right answer and add appropriate callback
             if (q.options[i].correct) {
                 optionLI.addEventListener("click", correctAnswer);
             } else {
@@ -115,11 +119,13 @@ function takeQuiz() {
         };        
     }
 
-    // Functions that tidies up after the quiz is over
+    // Function that tidies up after the quiz is over
     function endQuiz(finished) {
         // stop the timer
         clearInterval(mainTimer);
         console.log("All done!");
+
+        // inform the user of the results
         question.textContent = ((timeRemaining)?"You finished all the questions":"You ran out of time") + " and you got " + totalRight + " correct.";
         if (finished) {
             $(options).empty();

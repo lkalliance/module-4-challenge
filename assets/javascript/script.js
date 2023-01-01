@@ -1,16 +1,42 @@
-// GRAB VARIOUS CONTAINERS
-// div that contains the time remaining
-const header = document.querySelector("#startQuiz");  // header and start button
-const quiz = document.querySelector("#quiz");         // quiz section
-const start = document.querySelector("#startBtn");    // "Start Quiz" button
+// GRAB VARIOUS CONTAINERS AND BUTTONS
+const startQuiz = document.querySelector("#startQuiz");     // invitation section
+const startBtn = document.querySelector("#startBtn");   // "Start Quiz" button
+const quiz = document.querySelector("#quiz");           // quiz section
+const enterScore = document.querySelector("#enterScore");   // enter score section
+const highScores = document.querySelector("#highScores");   // high scores section
+const retakeBtn = document.querySelector("#back");      // retake quiz button
+const clearBtn = document.querySelector("#clear");      // clear high scores button
+const viewBtn = document.querySelector("#viewScores");  // show high scores button
+const submitBtn = document.querySelector("#submitScore");    // submit your score button
+
+const sections = [ startQuiz, quiz, enterScore, highScores ]    // iterable array of sections
 
 const startingTime = 90;        // clock starts at this time
 const penalty = 5;              // amount of seconds penalty for wrong answer
 
 
-start.addEventListener("click", function() {
-    takeQuiz();
-})
+initialize();
+
+
+// Set up all the listeners on the various buttons
+
+function initialize() {
+    startBtn.addEventListener("click", function() {
+        takeQuiz();
+    })
+    viewBtn.addEventListener("click", function() {
+        console.log("show high scores");
+    });
+
+    clearBtn.addEventListener("click", function() {
+        console.log("clear the high scores");
+    });
+    retakeBtn.addEventListener("click", function() {
+        takeQuiz();
+    });
+}
+
+
 
 
 // Encasing everything to do with a quiz into
@@ -45,6 +71,9 @@ function takeQuiz() {
     let correctAnswer = function(e) {
         e.preventDefault();
 
+        // flash the result
+        showResult(true);
+
         // mark the question as having been answered
         quizQs[questionNumber].answered = true;
 
@@ -66,17 +95,19 @@ function takeQuiz() {
     // Function for when a user answers a question incorrectly
     let wrongAnswer = function(e) {
         e.preventDefault();
+
+        // flash the result
+        showResult(false);
+
+        // mark the question as having been answered
         quizQs[questionNumber].answered = true;
 
-console.log("Was this really wrong?");
-console.log(quizQs[questionNumber].options[e.target.dataset.nth].correct);
-
+        // record which option was clicked
         quizQs[questionNumber].options[e.target.dataset.nth].clicked=true;
-        console.log("wrong!");
 
         // remove penalty seconds from timer
         timeRemaining -= penalty;
-        stopClock();    // so clock doesn't get 
+        stopClock();    // so user won't flip if clock was about to turn 
 
         // check if that exhausts the timer
         if (timeRemaining <=0) {
@@ -101,6 +132,8 @@ console.log(quizQs[questionNumber].options[e.target.dataset.nth].correct);
 
     /* END FUNCTION EXPRESSIONS */
 
+
+
     shuffleMe(quizQs);
     initQuiz();
     // Start the quiz by calling the first question
@@ -112,9 +145,8 @@ console.log(quizQs[questionNumber].options[e.target.dataset.nth].correct);
     
     // Function that "clears the decks" and starts the timer
     function initQuiz() {
-        $("#startQuiz").toggleClass("visible", false);  // hide the "start quiz" section 
+        showSection(quiz);
         timer.textContent = convertToTime(timeRemaining);   // set the timer view to start
-        $(quiz).toggleClass("visible", true);        // show the quiz interface
         $(options).toggleClass("visible", true);     // show the quiz options container
         mainTimer = setInterval(countdown, 1000);       // start the main countdown
     }
@@ -208,6 +240,22 @@ console.log(quizQs[questionNumber].options[e.target.dataset.nth].correct);
         return false;
     }
 
+    // Utility that flashes the result of the question
+    function showResult(correct) {
+        // set the content
+        result.textContent = correct?"Correct":"Incorrect";
+
+        // which class
+        let newClass = correct?"correct":"wrong";
+
+        // add the class, and then reset after a half second
+        $(result).addClass(newClass);
+        setTimeout(function() {
+            $(result).removeClass(newClass);
+            result.textContent = "";
+            }, 500);
+    }
+
     // Utility that updates the user view of time remaining
     function updateClock(remaining) {
         timer.textContent = convertToTime(remaining);
@@ -223,4 +271,14 @@ function saveResults(summary, correct, finished) {
 
     // TEST: iterate over summary object and compare it's output
     // of correct answers vs. the incremented total
+}
+
+function showSection(show) {
+    for ( let i = 0; i < sections.length; i++ ) {
+        if ( sections[i] == show ) {
+            $(sections[i]).toggleClass("visible", true);
+        } else {
+            $(sections[i]).toggleClass("visible", false);
+        }
+    }
 }

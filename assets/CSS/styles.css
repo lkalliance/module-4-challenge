@@ -43,16 +43,14 @@ main {
     margin: 0 30px;
 }
 
-main section,
-main aside,
-main ol {
+main section {
     display: none;
 }
 
 
 
 
-main .visible {
+main section.visible {
     display: block;
 }
 

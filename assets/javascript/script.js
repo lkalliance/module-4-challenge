@@ -34,6 +34,9 @@ function initialize() {
     retakeBtn.addEventListener("click", function() {
         takeQuiz();
     });
+    submitBtn.addEventListener("click", function() {
+        console.log("submit my score");
+    })
 }
 
 

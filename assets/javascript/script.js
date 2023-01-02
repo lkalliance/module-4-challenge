@@ -4,14 +4,19 @@ const startBtn = document.querySelector("#startBtn");   // "Start Quiz" button
 const quiz = document.querySelector("#quiz");           // quiz section
 const enterScore = document.querySelector("#enterScore");   // enter score section
 const highScores = document.querySelector("#highScores");   // high scores section
+const scoresTable = document.querySelector("#scores");  // high scores table
 const retakeBtn = document.querySelector("#back");      // retake quiz button
 const clearBtn = document.querySelector("#clear");      // clear high scores button
 const viewBtn = document.querySelector("#viewScores");  // show high scores button
-const submitBtn = document.querySelector("#submitScore");    // submit your score button
+const submitBtn = document.querySelector("#submitScore");   // submit score
+const timeLeft = document.querySelector("#timeRemaining");  // span to show result
+const finalScore = document.querySelector("#finalScore");   // span to show score
+const initials = document.querySelector("#enterInits");     // input to grab initials
+
 
 const sections = [ startQuiz, quiz, enterScore, highScores ]    // iterable array of sections
 
-const startingTime = 90;        // clock starts at this time
+const startingTime = 30;        // clock starts at this time
 const penalty = 5;              // amount of seconds penalty for wrong answer
 
 
@@ -25,19 +30,16 @@ function initialize() {
         takeQuiz();
     })
     viewBtn.addEventListener("click", function() {
-        console.log("show high scores");
+        showResults();
     });
-
     clearBtn.addEventListener("click", function() {
-        console.log("clear the high scores");
+        clearScores();
     });
     retakeBtn.addEventListener("click", function() {
         takeQuiz();
     });
-    submitBtn.addEventListener("click", function() {
-        console.log("submit my score");
-    })
-}
+    drawResults();
+ }
 
 
 
@@ -87,7 +89,7 @@ function takeQuiz() {
         console.log("correct!");
         if( (questionNumber + 1) == quizQs.length) {
             // this was the last question
-            endQuiz();
+            endQuiz(true);
         }
         else {
             questionNumber++;
@@ -115,6 +117,7 @@ function takeQuiz() {
         // check if that exhausts the timer
         if (timeRemaining <=0) {
             timeRemaining = 0;
+            questionNumber++;
             endQuiz();
             updateClock(0);
             return;
@@ -125,12 +128,16 @@ function takeQuiz() {
 
         if( (questionNumber + 1) == quizQs.length) {
             // this was the last question
-            endQuiz();
+            endQuiz(true);
         }
         else {
             questionNumber++;
             newQ(quizQs[questionNumber]);
         }
+    }
+
+    let stopQuiz = function() {
+        endQuiz(false, true);
     }
 
     /* END FUNCTION EXPRESSIONS */
@@ -152,6 +159,9 @@ function takeQuiz() {
         timer.textContent = convertToTime(timeRemaining);   // set the timer view to start
         $(options).toggleClass("visible", true);     // show the quiz options container
         mainTimer = setInterval(countdown, 1000);       // start the main countdown
+
+        // add a listener to View High Scores that stops the quiz
+        viewBtn.addEventListener("click", stopQuiz);
     }
     
     // Put a new question on the screen
@@ -183,17 +193,11 @@ function takeQuiz() {
     }
 
     // Function that tidies up after the quiz is over
-    function endQuiz(finished) {
+    function endQuiz(finished, stopShort) {
         // stop the timer
         stopClock();
         console.log("All done!");
-
-        // inform the user of the results
-        question.textContent = ((timeRemaining)?"You finished all the questions":"You ran out of time") + " and you got " + totalRight + " correct.";
-        if (finished) {
-            $(options).empty();
-        }
-        console.log("You got " + totalRight + " correct!");
+        timer.textContent = "";
 
         // remove event listeners from all option buttons
         let opts = options.getElementsByTagName("LI");
@@ -202,7 +206,12 @@ function takeQuiz() {
             opts[i].removeEventListener("click", wrongAnswer);
         }
 
-        saveResults(quizQs, totalRight, timeRemaining);
+        if (!stopShort) {
+            saveResults({ results: quizQs, correct: totalRight, answered: finished?(questionNumber + 1):questionNumber, left: timeRemaining });
+        }
+
+        // remove the quiz-specific listener from "View High Scores"
+        viewBtn.removeEventListener("click", stopQuiz);
     }
 
     // Utilities to start and stop the clock to make coe more readable
@@ -212,14 +221,6 @@ function takeQuiz() {
 
     function stopClock() {
         clearInterval(mainTimer);
-    }
-
-    // Utility that takes a total number of seconds and returns a m:ss string
-    function convertToTime(secs) {
-        let minutes = (Math.floor(secs/60));
-        let seconds = secs % 60;
-        let timeString = minutes + ":" + ((seconds<10)?"0":"") + seconds;
-        return timeString;
     }
 
     // Utility that takes an array and shuffles it
@@ -268,14 +269,104 @@ function takeQuiz() {
     
 }
 
-function saveResults(summary, correct, finished) {
-    console.log(summary);
-    console.log("Going to ask to save results");
+function saveResults(summary) {
+    // temporarily add listener to submit button
+    submitBtn.addEventListener("click", addScore);
+    showSection(enterScore);
 
-    // TEST: iterate over summary object and compare it's output
-    // of correct answers vs. the incremented total
+    timeLeft.textContent = (summary.left==0)?"You ran out of time.":("You had " + convertToTime(summary.left) + " remaining");
+
+    let phrase = (summary.answered == summary.correct)?("all " + summary.correct + " right."):(summary.correct + " right.");
+    finalScore.textContent = "You answered " + summary.answered + " questions, and got " + phrase;
+
+    function addScore() {
+        // if the initials value is empty, amscray
+        // (recursion to avoid multiple listeners on the button)
+        if (initials.value.length == 0) {
+            submitBtn.removeEventListener("click", addScore);
+            saveResults(summary);
+            return;
+        }
+        // add the initials the user added and the date
+        summary.inits = initials.value;
+        summary.date = new Date();
+
+        // set the "scores" array to the current high scores, if any
+        let scores = [];
+        if(typeof(localStorage.getItem("highScores"))=="string") {
+            scores=JSON.parse(localStorage.getItem("highScores"));
+        }
+
+        // add the latest result to the array, and then store
+        scores.push(summary);
+        localStorage.setItem("highScores", JSON.stringify(scores));
+        submitBtn.removeEventListener("click", addScore);
+        drawResults();
+        showResults();
+     }
 }
 
+function showResults() {
+    showSection(highScores);
+}
+
+function drawResults() {
+    let tableBody = scoresTable.querySelector("tbody");
+    $(tableBody).empty();
+
+    let storedScores = localStorage.getItem("highScores");
+    console.log(storedScores);
+
+    // If there are no high scores to show don't show them
+    if (storedScores === "false") {
+        console.log("About to write the empty row");
+        addRow(false);
+        return;
+    }
+
+    // parse the string, then sort by score
+    storedScores = JSON.parse(storedScores);
+    storedScores.sort(function(a, b) { 
+        if (a.correct == b.correct) return ( b.left - a.left );
+        else return ( b.correct - a.correct )
+    });
+
+    // iterate over the scores, and add rows
+    for (let i = 0; i < storedScores.length; i++) {
+        addRow(storedScores[i]);
+    }
+
+    // function to add a row
+    function addRow(data) {
+        console.log(data);
+        let newRow = document.createElement("TR");
+        if (!data) {
+            let emptyCell = document.createElement("TD");
+            emptyCell.setAttribute("colspan", 4);
+            emptyCell.textContent = "No scores to show"
+            emptyCell.className = "no-scores";
+            newRow.appendChild(emptyCell);
+        } else {
+            for ( let i = 0; i < 4; i++ ) {
+                newRow.appendChild(document.createElement("TD"));
+            }
+            newRow.childNodes[0].textContent = convertToDate(data.date);
+            newRow.childNodes[1].textContent = data.inits;
+            newRow.childNodes[2].textContent = data.answered;
+            newRow.childNodes[3].textContent = data.correct;
+        };
+        tableBody.appendChild(newRow);
+    }
+}
+
+function clearScores() {
+    localStorage.setItem("highScores", false);
+    drawResults();
+    showResults();
+}
+
+
+// This iterates over all the sections, hides them all except the requested one
 function showSection(show) {
     for ( let i = 0; i < sections.length; i++ ) {
         if ( sections[i] == show ) {
@@ -284,4 +375,21 @@ function showSection(show) {
             $(sections[i]).toggleClass("visible", false);
         }
     }
+}
+
+// Utility that takes a total number of seconds and returns a m:ss string
+function convertToTime(secs) {
+    let minutes = (Math.floor(secs/60));
+    let seconds = secs % 60;
+    let timeString = minutes + ":" + ((seconds<10)?"0":"") + seconds;
+    return timeString;
+}
+
+// Utility that takes a standard date string and converts to presentable format
+function convertToDate(dateString) {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let dateTime = dateString.split("T");
+    let justDate = dateTime[0].split("-");
+    let reformattedDate = months[(justDate[1]-1)] + " " + parseInt(justDate[2]) + ", " + justDate[0];
+    return reformattedDate;
 }

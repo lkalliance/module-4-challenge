@@ -33,11 +33,12 @@ function initialize() {
         showResults();
     });
     clearBtn.addEventListener("click", function() {
-        console.log("clear the high scores");
+        clearScores();
     });
     retakeBtn.addEventListener("click", function() {
         takeQuiz();
     });
+    drawResults();
  }
 
 
@@ -300,20 +301,25 @@ function saveResults(summary) {
         scores.push(summary);
         localStorage.setItem("highScores", JSON.stringify(scores));
         submitBtn.removeEventListener("click", addScore);
+        drawResults();
         showResults();
      }
 }
 
-
 function showResults() {
+    showSection(highScores);
+}
+
+function drawResults() {
     let tableBody = scoresTable.querySelector("tbody");
     $(tableBody).empty();
 
-    showSection(highScores);
     let storedScores = localStorage.getItem("highScores");
+    console.log(storedScores);
 
     // If there are no high scores to show don't show them
-    if (typeof(storedScores)!="string") {
+    if (storedScores === "false") {
+        console.log("About to write the empty row");
         addRow(false);
         return;
     }
@@ -351,6 +357,12 @@ function showResults() {
         };
         tableBody.appendChild(newRow);
     }
+}
+
+function clearScores() {
+    localStorage.setItem("highScores", false);
+    drawResults();
+    showResults();
 }
 
 

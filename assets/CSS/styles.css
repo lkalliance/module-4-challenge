@@ -47,10 +47,10 @@ main section {
     display: none;
 }
 
-
-
-
 main section.visible {
     display: block;
 }
+
+
+
 

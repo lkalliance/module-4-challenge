@@ -293,8 +293,11 @@ function saveResults(summary) {
 
         // set the "scores" array to the current high scores, if any
         let scores = [];
+        console.log(scores);
         if(typeof(localStorage.getItem("highScores"))=="string") {
-            scores=JSON.parse(localStorage.getItem("highScores"));
+            console.log("There are high scores");
+            console.log(localStorage.getItem("highScores"));
+            scores = JSON.parse(localStorage.getItem("highScores"));
         }
 
         // add the latest result to the array, and then store
@@ -318,7 +321,7 @@ function drawResults() {
     console.log(storedScores);
 
     // If there are no high scores to show don't show them
-    if (storedScores === "false") {
+    if (typeof(storedScores) != "string") {
         console.log("About to write the empty row");
         addRow(false);
         return;
@@ -360,7 +363,7 @@ function drawResults() {
 }
 
 function clearScores() {
-    localStorage.setItem("highScores", false);
+    localStorage.removeItem("highScores");
     drawResults();
     showResults();
 }

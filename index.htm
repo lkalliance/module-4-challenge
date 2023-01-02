@@ -7,30 +7,25 @@
     <link rel="stylesheet" href="./assets/CSS/normalize.css">
     <link rel="stylesheet" href="./assets/CSS/styles.css">
     <script src="./assets/javascript/jquery-3.6.3.min.js"></script>
+    <script src="./assets/javascript/quizquestions.js"></script>
     <title>Coding Quiz Challenge</title>
 </head>
 <body>
     <header>
-        <div id="viewScores"><a href="">View High Scores</a></div>
-        <div id="timer">You will have 90 seconds</div>
+        <button id="viewScores">View High Scores</button>
+        <div id="timer"></div>
     </header>
     <main>
         <section id="startQuiz" class="visible">
-            <h1 id="title" class="visible">Coding Quiz Challenge</h1>
-            <button id="startQuiz">start the quiz</button>
+            <h1 id="title">Coding Quiz Challenge</h1>
+            <button id="startBtn">start the quiz</button>
         </section>
         <section id="quiz">
             <h2 id="question">
-                This is a question
             </h2>
             <ol id="options">
-                <li>This is a question option</li>
-                <li>This is a question option</li>
-                <li>This is a question option</li>
-                <li>This is a question option</li>
             </ol>
             <aside id="result">
-                This is the result
             </aside>
         </section>
         <section id="enterScore">
@@ -42,10 +37,6 @@
         </section>
         <section id="highScores">
             <ol id="scores">
-                <li>This is a high score</li>
-                <li>This is a high score</li>
-                <li>This is a high score</li>
-                <li>This is a high score</li>
             </ol>
             <button id="back">try again</button>
             <button id="clear">clear scores</button>

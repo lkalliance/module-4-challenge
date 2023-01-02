@@ -4,6 +4,7 @@ const startBtn = document.querySelector("#startBtn");   // "Start Quiz" button
 const quiz = document.querySelector("#quiz");           // quiz section
 const enterScore = document.querySelector("#enterScore");   // enter score section
 const highScores = document.querySelector("#highScores");   // high scores section
+const scoresTable = document.querySelector("#scores");  // high scores table
 const retakeBtn = document.querySelector("#back");      // retake quiz button
 const clearBtn = document.querySelector("#clear");      // clear high scores button
 const viewBtn = document.querySelector("#viewScores");  // show high scores button
@@ -31,7 +32,6 @@ function initialize() {
     viewBtn.addEventListener("click", function() {
         showResults();
     });
-
     clearBtn.addEventListener("click", function() {
         console.log("clear the high scores");
     });
@@ -198,13 +198,6 @@ function takeQuiz() {
         console.log("All done!");
         timer.textContent = "";
 
-        // inform the user of the results
-        question.textContent = (finished?"You finished all the questions":"You ran out of time") + " and you got " + totalRight + " correct.";
-        if (finished) {
-            $(options).empty();
-        }
-        console.log("You got " + totalRight + " correct!");
-
         // remove event listeners from all option buttons
         let opts = options.getElementsByTagName("LI");
         for (let i = 0; i < opts.length; i++) {
@@ -276,17 +269,8 @@ function takeQuiz() {
 }
 
 function saveResults(summary) {
-    // Grab DOM elements to reference
- 
-    submitBtn.addEventListener("click", function() {
-        // if no initials were returned then do nothing
-        if( initials.value.length == 0 ) return;
-
-        // otherwise add the score and go to the scores history
-        addScore(summary, initials.value);
-        showResults();
-    })
-
+    // temporarily add listener to submit button
+    submitBtn.addEventListener("click", addScore);
     showSection(enterScore);
 
     timeLeft.textContent = (summary.left==0)?"You ran out of time.":("You had " + convertToTime(summary.left) + " remaining");
@@ -294,10 +278,17 @@ function saveResults(summary) {
     let phrase = (summary.answered == summary.correct)?("all " + summary.correct + " right."):(summary.correct + " right.");
     finalScore.textContent = "You answered " + summary.answered + " questions, and got " + phrase;
 
-    function addScore(scoreObject) {
+    function addScore() {
+        // if the initials value is empty, amscray
+        // (recursion to avoid multiple listeners on the button)
+        if (initials.value.length == 0) {
+            submitBtn.removeEventListener("click", addScore);
+            saveResults(summary);
+            return;
+        }
         // add the initials the user added and the date
-        scoreObject.inits = initials.value;
-        scoreObject.date = new Date();
+        summary.inits = initials.value;
+        summary.date = new Date();
 
         // set the "scores" array to the current high scores, if any
         let scores = [];
@@ -306,14 +297,60 @@ function saveResults(summary) {
         }
 
         // add the latest result to the array, and then store
-        scores.push(scoreObject);
+        scores.push(summary);
         localStorage.setItem("highScores", JSON.stringify(scores));
+        submitBtn.removeEventListener("click", addScore);
+        showResults();
      }
 }
 
 
 function showResults() {
+    let tableBody = scoresTable.querySelector("tbody");
+    $(tableBody).empty();
+
     showSection(highScores);
+    let storedScores = localStorage.getItem("highScores");
+
+    // If there are no high scores to show don't show them
+    if (typeof(storedScores)!="string") {
+        addRow(false);
+        return;
+    }
+
+    // parse the string, then sort by score
+    storedScores = JSON.parse(storedScores);
+    storedScores.sort(function(a, b) { 
+        if (a.correct == b.correct) return ( b.left - a.left );
+        else return ( b.correct - a.correct )
+    });
+
+    // iterate over the scores, and add rows
+    for (let i = 0; i < storedScores.length; i++) {
+        addRow(storedScores[i]);
+    }
+
+    // function to add a row
+    function addRow(data) {
+        console.log(data);
+        let newRow = document.createElement("TR");
+        if (!data) {
+            let emptyCell = document.createElement("TD");
+            emptyCell.setAttribute("colspan", 4);
+            emptyCell.textContent = "No scores to show"
+            emptyCell.className = "no-scores";
+            newRow.appendChild(emptyCell);
+        } else {
+            for ( let i = 0; i < 4; i++ ) {
+                newRow.appendChild(document.createElement("TD"));
+            }
+            newRow.childNodes[0].textContent = convertToDate(data.date);
+            newRow.childNodes[1].textContent = data.inits;
+            newRow.childNodes[2].textContent = data.answered;
+            newRow.childNodes[3].textContent = data.correct;
+        };
+        tableBody.appendChild(newRow);
+    }
 }
 
 
@@ -334,4 +371,13 @@ function convertToTime(secs) {
     let seconds = secs % 60;
     let timeString = minutes + ":" + ((seconds<10)?"0":"") + seconds;
     return timeString;
+}
+
+// Utility that takes a standard date string and converts to presentable format
+function convertToDate(dateString) {
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let dateTime = dateString.split("T");
+    let justDate = dateTime[0].split("-");
+    let reformattedDate = months[(justDate[1]-1)] + " " + parseInt(justDate[2]) + ", " + justDate[0];
+    return reformattedDate;
 }

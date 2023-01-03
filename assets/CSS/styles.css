@@ -1,5 +1,7 @@
+/* ---- GENERAL USE STYLES ---- */
+
 * {
-    font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 body {
@@ -7,28 +9,23 @@ body {
     padding: 10px;
 }
 
+h1,
+h2 {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+}
+
 h1 {
     text-align: center;
 }
 
-a {
-    text-decoration: none;
-}
-
-a:hover {
-    text-decoration: underline;
-}
-
 button {
-    background-color: white;
-    color: green;
     border: 1px solid green;
     border-radius: 6px;
     padding: 8px 10px;
-    text-transform: uppercase;
-    margin: 0 auto;
-    display: block;
+    color: green;
+    background-color: white;
     font-size: .75em;
+    text-transform: uppercase;
 }
 
 button:hover {
@@ -63,7 +60,7 @@ header div#timer {
 }
 
 
-/* ---- MAIN CONTENT STYLES ---- */
+/* ---- MAIN CONTENT SECTION STYLES ---- */
 
 main {
     margin: 0 20%;
@@ -83,11 +80,11 @@ main section.visible {
 /* ---- QUIZ PAGE STYLES ---- */
 
 #quiz li {
-    background-color: rgb(146, 173, 231);
+    margin-bottom: 3px;
     border: 1px solid black;
     border-radius: 4px;
     padding: 7px;
-    margin-bottom: 3px;
+    background-color: rgb(146, 173, 231);
     text-align: left;
 }
 
@@ -98,12 +95,11 @@ main section.visible {
 }
 
 #result {
-    color: white;
-    padding: 5px;
-    font-size: .75em;
     width: 50%;
     margin-left: 40px;
-    text-align: left;
+    padding: 5px;
+    color: white;
+    font-size: .75em;
 }
 
 #result.correct {
@@ -123,23 +119,20 @@ main section.visible {
 
 /* ---- ENTER SCORES STYLES ---- */
 
-#enterScore h2,
-#enterScore p,
-#enterScore form {
+#enterScore p {
     text-align: center;
 }
 
 #enterScore button {
-    display: inline;
     height: 30px;
 }
 
 #enterScore input {
+    height: 24px;
+    border: 1px solid green;
+    padding: 1px 10px;
     font-family: inherit;
     font-size: .8em;
-    height: 24px;
-    padding: 1px 10px;
-    border: 1px solid green;
 }
 
 
@@ -165,12 +158,4 @@ main section.visible {
 
 #highScores tr:nth-child(even) {
     background-color: #ddd;
-}
-
-#highScores form {
-    text-align: center;
-}
-
-#highScores button {
-    display: inline;
 }

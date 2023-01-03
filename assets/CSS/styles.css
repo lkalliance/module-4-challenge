@@ -79,6 +79,16 @@ main section.visible {
 
 /* ---- QUIZ PAGE STYLES ---- */
 
+#quiz h2 {
+    height: 2.5em;
+    margin-bottom: 0;
+}
+
+#quiz ol {
+    list-style-position: inside;
+    padding-left: 0;
+}
+
 #quiz li {
     margin-bottom: 3px;
     border: 1px solid black;
@@ -90,16 +100,16 @@ main section.visible {
 
 #quiz li:hover {
     background-color: rgb(47, 106, 233);
-    color: rgb(146, 173, 231);
+    color: white;
     cursor: pointer;
 }
 
 #result {
     width: 50%;
-    margin-left: 40px;
     padding: 5px;
     color: white;
     font-size: .75em;
+    text-align: left;
 }
 
 #result.correct {

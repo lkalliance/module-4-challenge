@@ -16,7 +16,7 @@ const initials = document.querySelector("#enterInits");     // input to grab ini
 
 const sections = [ startQuiz, quiz, enterScore, highScores ]    // iterable array of sections
 
-const startingTime = 30;        // clock starts at this time
+const startingTime = 90;        // clock starts at this time
 const penalty = 5;              // amount of seconds penalty for wrong answer
 
 

@@ -1,13 +1,13 @@
 // GRAB VARIOUS CONTAINERS AND BUTTONS
 const startQuiz = document.querySelector("#startQuiz");     // invitation section
-const startBtn = document.querySelector("#startBtn");   // "Start Quiz" button
-const quiz = document.querySelector("#quiz");           // quiz section
+const startBtn = document.querySelector("#startBtn");       // "Start Quiz" button
+const quiz = document.querySelector("#quiz");               // quiz section
 const enterScore = document.querySelector("#enterScore");   // enter score section
 const highScores = document.querySelector("#highScores");   // high scores section
-const scoresTable = document.querySelector("#scores");  // high scores table
-const retakeBtn = document.querySelector("#back");      // retake quiz button
-const clearBtn = document.querySelector("#clear");      // clear high scores button
-const viewBtn = document.querySelector("#viewScores");  // show high scores button
+const scoresTable = document.querySelector("#scores");      // high scores table
+const retakeBtn = document.querySelector("#back");          // retake quiz button
+const clearBtn = document.querySelector("#clear");          // clear high scores button
+const viewBtn = document.querySelector("#viewScores");      // show high scores button
 const submitBtn = document.querySelector("#submitScore");   // submit score
 const timeLeft = document.querySelector("#timeRemaining");  // span to show result
 const finalScore = document.querySelector("#finalScore");   // span to show score
@@ -327,7 +327,7 @@ function drawResults() {
         return;
     }
 
-    // parse the string, then sort by score
+    // parse the string, then sort by score and time left
     storedScores = JSON.parse(storedScores);
     storedScores.sort(function(a, b) { 
         if (a.correct == b.correct) return ( b.left - a.left );
@@ -355,7 +355,7 @@ function drawResults() {
             }
             newRow.childNodes[0].textContent = convertToDate(data.date);
             newRow.childNodes[1].textContent = data.inits;
-            newRow.childNodes[2].textContent = data.answered;
+            newRow.childNodes[2].textContent = (data.left==0)?"-":convertToTime(data.left);
             newRow.childNodes[3].textContent = data.correct;
         };
         tableBody.appendChild(newRow);

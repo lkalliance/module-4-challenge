@@ -19,6 +19,32 @@ a:hover {
     text-decoration: underline;
 }
 
+button {
+    background-color: white;
+    color: green;
+    border: 1px solid green;
+    border-radius: 6px;
+    padding: 8px 10px;
+    text-transform: uppercase;
+    margin: 0 auto;
+    display: block;
+    font-size: .75em;
+}
+
+button:hover {
+    color: white;
+    background-color: green;
+    cursor: pointer;
+}
+
+
+/* ---- KEYFRAMES ---- */
+
+@keyframes result {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
 
 /* ---- HEADER STYLES ---- */
 
@@ -40,11 +66,13 @@ header div#timer {
 /* ---- MAIN CONTENT STYLES ---- */
 
 main {
-    margin: 0 30px;
+    margin: 0 20%;
+    min-width: 400px;
 }
 
 main section {
     display: none;
+    text-align: center;
 }
 
 main section.visible {
@@ -52,5 +80,96 @@ main section.visible {
 }
 
 
+/* ---- QUIZ PAGE STYLES ---- */
+
+#quiz li {
+    background-color: rgb(146, 173, 231);
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 7px;
+    margin-bottom: 3px;
+    text-align: left;
+}
+
+#quiz li:hover {
+    background-color: rgb(47, 106, 233);
+    color: rgb(146, 173, 231);
+    cursor: pointer;
+}
+
+#result {
+    color: white;
+    padding: 5px;
+    font-size: .75em;
+    width: 50%;
+    margin-left: 40px;
+}
+
+#result.correct {
+    background-image: linear-gradient(to right, green, white);
+    animation-name: result;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+#result.wrong {
+    background-image: linear-gradient(to right, red, white);
+    animation-name: result;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
 
 
+/* ---- ENTER SCORES STYLES ---- */
+
+#enterScore h2,
+#enterScore p,
+#enterScore form {
+    text-align: center;
+}
+
+#enterScore button {
+    display: inline;
+    height: 30px;
+}
+
+#enterScore input {
+    font-family: inherit;
+    font-size: .8em;
+    height: 24px;
+    padding: 1px 10px;
+    border: 1px solid green;
+}
+
+
+
+/* ---- HIGH SCORES STYLES ---- */
+
+#highScores table {
+    margin: 10px auto;
+    border-collapse: collapse;
+}
+
+#highScores td,
+#highScores th {
+    min-width: 50px;
+    padding: 6px 12px;
+    text-align: center;
+}
+
+#highScores th {
+    background-color: green;
+    color: white;
+}
+
+#highScores tr:nth-child(even) {
+    background-color: #ddd;
+}
+
+#highScores form {
+    text-align: center;
+}
+
+#highScores button {
+    display: inline;
+}

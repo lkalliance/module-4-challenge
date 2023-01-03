@@ -257,7 +257,7 @@ function takeQuiz() {
         setTimeout(function() {
             $(result).removeClass(newClass);
             result.textContent = "";
-            }, 500);
+            }, 1000);
     }
 
     // Utility that updates the user view of time remaining

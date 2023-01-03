@@ -103,6 +103,7 @@ main section.visible {
     font-size: .75em;
     width: 50%;
     margin-left: 40px;
+    text-align: left;
 }
 
 #result.correct {

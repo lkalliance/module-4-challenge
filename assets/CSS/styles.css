@@ -139,10 +139,15 @@ main section.visible {
 
 #enterScore input {
     height: 24px;
+    width: 120px;
     border: 1px solid green;
     padding: 1px 10px;
     font-family: inherit;
     font-size: .8em;
+}
+
+#enterScore #noSubmit {
+    margin-left: 25px;
 }
 
 

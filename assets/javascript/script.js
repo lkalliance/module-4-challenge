@@ -6,6 +6,7 @@ const enterScore = document.querySelector("#enterScore");   // enter score secti
 const highScores = document.querySelector("#highScores");   // high scores section
 const scoresTable = document.querySelector("#scores");      // high scores table
 const retakeBtn = document.querySelector("#back");          // retake quiz button
+const noSubmit = document.querySelector("#noSubmit");       // don't submit, retake
 const clearBtn = document.querySelector("#clear");          // clear high scores button
 const viewBtn = document.querySelector("#viewScores");      // show high scores button
 const submitBtn = document.querySelector("#submitScore");   // submit score
@@ -36,6 +37,9 @@ function initialize() {
         clearScores();
     });
     retakeBtn.addEventListener("click", function() {
+        takeQuiz();
+    });
+    noSubmit.addEventListener("click", function() {
         takeQuiz();
     });
     drawResults();

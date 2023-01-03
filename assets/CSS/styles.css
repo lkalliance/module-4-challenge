@@ -72,6 +72,7 @@ main {
 
 main section {
     display: none;
+    text-align: center;
 }
 
 main section.visible {
@@ -87,6 +88,7 @@ main section.visible {
     border-radius: 4px;
     padding: 7px;
     margin-bottom: 3px;
+    text-align: left;
 }
 
 #quiz li:hover {

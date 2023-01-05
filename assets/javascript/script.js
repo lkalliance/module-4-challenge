@@ -9,13 +9,13 @@ const jScoresSection = $("#high-scores-section");    // high scores section
 const jStartBtn = $("#start-quiz-button");           // "Start Quiz" button
 const jTryAgainBtn = $("#try-again-button");         // retake quiz button
 const jNoSubmitBtn = $("#no-submit-button");         // don't submit, retake
-const jClearBtn = $("#clear");                       // clear high scores button
+const jClearBtn = $("#clear-button");                       // clear high scores button
 const jViewBtn = $("#view-scores-button");           // go to high scores button
 const jSubmitBtn = $("#submit-score-button");        // submit score button
 
 // Other containers
 const jScoresTable = $("#scores");                   // high scores table
-const jTimeLeft= $("#time-remainig");                // span to show result
+const jTimeLeft= $("#time-remaining");                // span to show result
 const jFinalScore = $("#final-score");               // span to show score
 const jInitialsInput = $("#enter-inits");            // input to grab initials
 const jTimer = $("#timer");                          // countdown clock container
@@ -78,8 +78,7 @@ function takeQuiz() {
     jTimer.text(convertToTime(timeRemaining));      // set the timer view to start
     
     
-    
-    
+
     /* FUNCTION EXPRESSIONS */
     
     const countdown = function() {
@@ -87,7 +86,6 @@ function takeQuiz() {
         timeRemaining--;
         updateClock(timeRemaining);
         if(timeRemaining<=0) {
-            console.log("Time's up!");
             endQuiz();
         }
     }
@@ -105,7 +103,6 @@ function takeQuiz() {
         quizQs[questionNumber].options[e.target.dataset.nth].clicked=true;
         
         totalRight++;
-        console.log("correct!");
         
         if( (questionNumber + 1) == quizQs.length) {
             // this was the last question
@@ -177,8 +174,6 @@ function takeQuiz() {
     
     /* FUNCTION DECLARATIONS */
     
-    
-    
     function newQ(q) {
         // This function puts a new question on the screen
         // parameter "q" is a question object
@@ -213,7 +208,6 @@ function takeQuiz() {
 
         // stop the clock and remove the time remaining text
         stopClock();
-        console.log("All done!");
         jTimer.text("");
         // remove event listeners from all option buttons
         $('#options li').each( function() {
@@ -308,7 +302,7 @@ function saveResults(summary) {
     // Make this section visible and hide the others
     showSection(jEnterSection);
     // Fill in the summary details on the user's result
-    jTimeLeft.text((summary.left==0)?"You ran out of time.":("You had " + convertToTime(summary.left) + " remaining"));
+    jTimeLeft.text((summary.left==0)?"You ran out of time.":("You had " + convertToTime(summary.left) + " remaining."));
     let phrase = (summary.answered == summary.correct)?("all " + summary.correct + " right."):(summary.correct + " right.");
     jFinalScore.text("You answered " + summary.answered + " questions, and got " + phrase);
 
@@ -324,24 +318,30 @@ function saveResults(summary) {
         // (recursion to avoid multiple listeners on the button)
         if (jInitialsInput.val().length == 0) {
             endSubmit();
-            showResults();
+            saveResults(summary);
             return;
         }
 
         // add the initials the user added and the date
         summary.inits = jInitialsInput.val();
         summary.date = new Date();
+
         // set the "scores" array to the current high scores, if any
         let scores = [];
         if(typeof(localStorage.getItem("highScores"))=="string") {
             scores = JSON.parse(localStorage.getItem("highScores"));
         }
+
         // add the latest result to the array, and then store
         scores.push(summary);
         localStorage.setItem("highScores", JSON.stringify(scores));
 
+        // redraw the high scores table
+        drawResults();
         // our job here is done, go to cleanup
         endSubmit();
+        // send the user to the results table
+        showResults();
      }
 
      function notAddingScore() {
@@ -373,18 +373,13 @@ function saveResults(summary) {
 /* SHOW RESULTS PAGE ---------------------------------- */
 
 function showResults() {
-    // Yep, this is all there is.
+
+    // INITIALIZATION
 
     // show the High Scores section, hide the others
     showSection(jScoresSection);
-    // add the appropriate listeners
-    jClearBtn.on("click", function() {
-        clearScores();
-    });
-
 
     // The real work is in the drawResults() function.
-
 }
 
 /* END SHOW RESULTS PAGE ------------------------------ */
@@ -437,12 +432,14 @@ function drawResults() {
 
     // now sort the rows by score first, then by time remaining
     newRows.sort(function(a, b) { 
-        // see the note above for the reason I'm
-        // sorting the rows after creating them and not before
-        let aCorrect = parseInt(a.children().eq(3).val());
-        let bCorrect = parseInt(b.children().eq(3).val());
-        let aLeft = parseInt(a.children().eq(2).val());
-        let bLeft = parseInt(b.children().eq(2).val());
+        /* see the note above for the reason I'm
+        sorting the rows after creating them and not before */
+
+        let aCorrect = a.children().eq(3).text();
+        let bCorrect = b.children().eq(3).text();
+        let aLeft = convertToSecs(a.children().eq(2).text());
+        let bLeft = convertToSecs(b.children().eq(2).text());
+
         if (aCorrect == bCorrect) return ( bLeft - aLeft );
         else return ( bCorrect - aCorrect )
     });
@@ -494,7 +491,7 @@ function drawResults() {
 
 function clearScores() {
     // This function clears the high scores from local storage,
-    // redraws the (empty) table and takes the user to the showResults page
+    // then redraws the (empty) table, then send the user back to the page
 
     localStorage.removeItem("highScores");
     drawResults();
@@ -523,6 +520,16 @@ function convertToTime(secs) {
     let seconds = secs % 60;
     let timeString = minutes + ":" + ((seconds<10)?"0":"") + seconds;
     return timeString;
+}
+
+function convertToSecs(time) {
+    // This utility does the opposite of what is above, converts from m:ss to seconds
+    // parameter "time" is the m:ss string to convert
+
+    let pieces = time.split(":");
+    let seconds = pieces[0] * 60;
+    seconds += pieces[1];
+    return seconds;
 }
 
 function convertToDate(dateString) {

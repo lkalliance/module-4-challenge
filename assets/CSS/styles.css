@@ -79,17 +79,17 @@ main section.visible {
 
 /* ---- QUIZ PAGE STYLES ---- */
 
-#quiz h2 {
+#quiz-section h2 {
     height: 2.5em;
     margin-bottom: 0;
 }
 
-#quiz ol {
+#quiz-section ol {
     list-style-position: inside;
     padding-left: 0;
 }
 
-#quiz li {
+#quiz-section li {
     margin-bottom: 3px;
     border: 1px solid black;
     border-radius: 4px;
@@ -98,7 +98,7 @@ main section.visible {
     text-align: left;
 }
 
-#quiz li:hover {
+#quiz-section li:hover {
     background-color: rgb(47, 106, 233);
     color: white;
     cursor: pointer;
@@ -129,15 +129,15 @@ main section.visible {
 
 /* ---- ENTER SCORES STYLES ---- */
 
-#enterScore p {
+#enter-score-section p {
     text-align: center;
 }
 
-#enterScore button {
+#enter-score-section button {
     height: 30px;
 }
 
-#enterScore input {
+#enter-score-section input {
     height: 24px;
     width: 120px;
     border: 1px solid green;
@@ -146,7 +146,7 @@ main section.visible {
     font-size: .8em;
 }
 
-#enterScore #noSubmit {
+#enter-score-section #noSubmit {
     margin-left: 25px;
 }
 
@@ -154,23 +154,23 @@ main section.visible {
 
 /* ---- HIGH SCORES STYLES ---- */
 
-#highScores table {
+#high-scores-section table {
     margin: 10px auto;
     border-collapse: collapse;
 }
 
-#highScores td,
-#highScores th {
+#high-scores-section td,
+#high-scores-section th {
     min-width: 50px;
     padding: 6px 12px;
     text-align: center;
 }
 
-#highScores th {
+#high-scores-section th {
     background-color: green;
     color: white;
 }
 
-#highScores tr:nth-child(even) {
+#high-scores-section tr:nth-child(even) {
     background-color: #ddd;
 }

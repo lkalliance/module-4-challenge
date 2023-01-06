@@ -93,7 +93,7 @@ main section.visible {
     margin-bottom: 3px;
     border: 1px solid black;
     border-radius: 4px;
-    padding: 7px;
+    padding: 0;
     background-color: rgb(146, 173, 231);
     text-align: left;
 }
@@ -104,23 +104,41 @@ main section.visible {
     cursor: pointer;
 }
 
+#quiz-section button {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: none;
+    padding: 8px;
+    background-color: transparent;
+    color: black;
+    text-align: left;
+    font-size: 1em;
+    text-transform: none;
+}
+
+#quiz-section li:hover button {
+    color: white;
+}
+
 #result {
-    width: 50%;
-    padding: 5px;
+    display: inline-block;
+    padding: 5px 30px;
     color: white;
     font-size: .75em;
     text-align: left;
+    text-transform: uppercase;
 }
 
 #result.correct {
-    background-image: linear-gradient(to right, green, white);
+    background-color: green;
     animation-name: result;
     animation-duration: 1s;
     animation-fill-mode: forwards;
 }
 
 #result.wrong {
-    background-image: linear-gradient(to right, red, white);
+    background-color: red;
     animation-name: result;
     animation-duration: 1s;
     animation-fill-mode: forwards;
@@ -146,7 +164,7 @@ main section.visible {
     font-size: .8em;
 }
 
-#enter-score-section #noSubmit {
+#enter-score-section #no-submit-button {
     margin-left: 25px;
 }
 

@@ -24,7 +24,6 @@ var quizQs = [
             { text: "The Boston Red Sox", correct: false },
             { text: "The San Francisco Giants", correct: false },
             { text: "The Chicago Cubs", correct: false },
-            { text: "The Chicago White Sox", correct: false }
         ]
     },
     {

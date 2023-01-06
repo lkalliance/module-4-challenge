@@ -9,13 +9,13 @@ const jScoresSection = $("#high-scores-section");    // high scores section
 const jStartBtn = $("#start-quiz-button");           // "Start Quiz" button
 const jTryAgainBtn = $("#try-again-button");         // retake quiz button
 const jNoSubmitBtn = $("#no-submit-button");         // don't submit, retake
-const jClearBtn = $("#clear-button");                       // clear high scores button
+const jClearBtn = $("#clear-button");                // clear high scores button
 const jViewBtn = $("#view-scores-button");           // go to high scores button
 const jSubmitBtn = $("#submit-score-button");        // submit score button
 
 // Other containers
 const jScoresTable = $("#scores");                   // high scores table
-const jTimeLeft= $("#time-remaining");                // span to show result
+const jTimeLeft= $("#time-remaining");               // span to show result
 const jFinalScore = $("#final-score");               // span to show score
 const jInitialsInput = $("#enter-inits");            // input to grab initials
 const jTimer = $("#timer");                          // countdown clock container
@@ -100,8 +100,8 @@ function takeQuiz() {
         // mark the question as having been answered
         quizQs[questionNumber].answered = true;
         // record which option was clicked
-        quizQs[questionNumber].options[e.target.dataset.nth].clicked=true;
-        
+        quizQs[questionNumber].options[e.target.parentNode.dataset.nth].clicked=true;
+        // increment the running total of correct answers
         totalRight++;
         
         if( (questionNumber + 1) == quizQs.length) {
@@ -125,7 +125,7 @@ function takeQuiz() {
         // mark the question as having been answered
         quizQs[questionNumber].answered = true;
         // record which option was clicked
-        quizQs[questionNumber].options[e.target.dataset.nth].clicked=true;
+        quizQs[questionNumber].options[e.target.parentNode.dataset.nth].clicked=true;
         // remove penalty seconds from timer
         timeRemaining -= penalty;
         stopClock();    // so user won't flip if clock was about to turn 
@@ -186,17 +186,19 @@ function takeQuiz() {
         shuffleMe(q.options);
                 
         // create li for each option, add text, attribute and listener
-        let jOptionLI;
+        let jOptionLI, jOptionBtn;
         for (let i = 0; i < q.options.length; i++) {
             jOptionLI = $("<li>");
-            jOptionLI.text(q.options[i].text);
+            jOptionBtn = $("<button>");
+            jOptionBtn.text(q.options[i].text);
             jOptionLI.attr("data-nth",i);
+            jOptionLI.append(jOptionBtn);
             jOptions.append(jOptionLI);
             // check if this is the right answer and add appropriate callback
             if (q.options[i].correct) {
-                jOptionLI.on("click", correctAnswer);
+                jOptionBtn.on("click", correctAnswer);
             } else {
-                jOptionLI.on("click", wrongAnswer); 
+                jOptionBtn.on("click", wrongAnswer); 
             }
         };        
     }

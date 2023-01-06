@@ -7,11 +7,14 @@ const jScoresSection = $("#high-scores-section");    // high scores section
 
 // Buttons
 const jStartBtn = $("#start-quiz-button");           // "Start Quiz" button
-const jTryAgainBtn = $("#try-again-button");         // retake quiz button
+const jTryAgainBtn = $("#try-again-button");         // retake quiz button (from high scores)
 const jNoSubmitBtn = $("#no-submit-button");         // don't submit, retake
 const jClearBtn = $("#clear-button");                // clear high scores button
 const jViewBtn = $("#view-scores-button");           // go to high scores button
 const jSubmitBtn = $("#submit-score-button");        // submit score button
+const jReviewBackBtn = $("#review-back");            // back button during review
+const jReviewNextBtn = $("#review-next");            // next button during review
+const jTryAgainRevBtn = $("#review-try-again");         // retake quiz button (from review)
 
 // Other containers
 const jScoresTable = $("#scores");                   // high scores table
@@ -48,6 +51,9 @@ function initialize() {
     jTryAgainBtn.on("click", function() {
         takeQuiz();
     });
+    jTryAgainRevBtn.on("click", function() {
+        takeQuiz();
+    });
     drawResults();
  }
 
@@ -70,7 +76,7 @@ function takeQuiz() {
     let timeRemaining = startingTime;   // initialize the timer
     let questionNumber = 0;             // tracks what question we're on
     let totalRight = 0;                 // tracks how many correct
-        
+    
     // shuffle the order of the questions
     shuffleMe(quizQs);
     // show the user the correct page
@@ -239,16 +245,17 @@ function takeQuiz() {
     function shuffleMe(arr) {
         // This utility takes an array and shuffles it
         // parameter "arr" is the array to be shuffled
+        // (Thanks to W3docs for this technique)
 
         let rand, temp;
         
         // start a counter at the end of the array
         let counter = arr.length;
-        while (counter > 0) {
+        while (counter != 0) {
+            // choose a random index
+            rand = Math.floor( Math.random() * counter );
             // decrement counter
             counter--;
-            // randomly pick an index up through the current counter
-            rand = Math.floor(Math.random() * counter);
             // swap the random-index element with the counter element
             temp = arr[counter];
             arr[counter] = arr[rand];
@@ -297,7 +304,7 @@ function saveResults(summary) {
     // parameter "summary" is an object with everything we know about the quiz
 
     // INITIALIZATION
-    
+
     // Add event listeners
     jSubmitBtn.on("click", addScore);
     jNoSubmitBtn.on("click", notAddingScore);
@@ -368,11 +375,11 @@ function saveResults(summary) {
      /* END FUNCTION DECLARATIONS */
 }
 
-/* END SAVE RESULTS PAGE ------------------------------ */
+// END SAVE RESULTS PAGE ------------------------------
 
 
 
-/* SHOW RESULTS PAGE ---------------------------------- */
+// SHOW RESULTS PAGE ----------------------------------
 
 function showResults() {
 
@@ -384,7 +391,107 @@ function showResults() {
     // The real work is in the drawResults() function.
 }
 
-/* END SHOW RESULTS PAGE ------------------------------ */
+// END SHOW RESULTS PAGE ------------------------------
+
+
+
+// REVIEW RESULTS PAGE --------------------------------
+
+function reviewResults(quiz) {
+    // parameter "quiz" is a quiz object with all q's, a's and results
+
+    /* FUNCTION EXPRESSIONS */
+
+    const endReview = function() {
+        // remove listeners to prevent multiple instances later
+        jReviewBackBtn.off("click");
+        jReviewNextBtn.off("click");
+        jViewBtn.off("click", endReview);
+        jTryAgainRevBtn.off("click", endReview);
+        // reset the quiz section to be ready to take a quiz
+        jQuizSection.removeClass("review");
+        jQuizSection.addClass("quiz");
+    }
+
+    /* END FUNCTION EXPRESSIONS */
+
+    // INITIALIZATION
+
+    // show the Quiz section, and customize it to this purpose
+    showSection(jQuizSection);
+    jQuizSection.removeClass("quiz");
+    jQuizSection.addClass("review");
+    // initialize a counter to track what question we're on
+    let questionNumber = 0;
+    // add listeners to the back and next buttons
+    // the true/false parameter passed is if we are going forward and not back
+    jReviewBackBtn.on("click", function() {
+        anotherQ(false);
+    })
+    jReviewNextBtn.on("click", function() {
+        anotherQ(true);
+    })
+    // add a listener to the exit point buttons to clean things up
+    jViewBtn.on("click", endReview);
+    jTryAgainRevBtn.on("click", endReview);
+    // disable the back button, since we're starting on the first question...
+    jReviewBackBtn.prop("disabled", true);
+    // ...but make sure the next button is active
+    jReviewNextBtn.prop("disabled", false);
+
+
+
+    // we start with the first question
+    newQ(quiz.results[0]);
+
+
+    
+    /* FUNCTION DECLARATIONS */
+    
+    function newQ(q) {
+        // This function draws the given question to the screen
+        // parameter "q" is a specific question with its options
+
+        // write the question
+        jQuestion.text(q.question);
+        // clear the options
+        jOptions.empty();
+        
+        // iterate through the options and write them
+        // create li for each option, add text, attribute and listener
+        let jOptionLI;
+        for (let i = 0; i < q.options.length; i++) {
+            jOptionLI = $("<li>");
+            jOptionLI.text(q.options[i].text);
+            jOptions.append(jOptionLI);
+            // add classes if this option was correct and/or clicked
+            if (q.options[i].correct) jOptionLI.addClass("correct");
+            if (q.options[i].clicked) jOptionLI.addClass("clicked"); 
+        };
+    }
+    
+    function anotherQ(next) {
+        // This function advances or goes back a question
+        // parameter "next" is a boolean: are we moving forward?
+    
+        // increment or decrement the question number
+        if (next) questionNumber++;
+        else questionNumber--;
+    
+        // enable or disable the navigation buttons if necessary
+        if ( questionNumber == 0 ) jReviewBackBtn.prop("disabled", true);
+        else jReviewBackBtn.prop("disabled", false);
+        if ( questionNumber == (quiz.results.length - 1) ) jReviewNextBtn.prop("disabled", true);
+        else jReviewNextBtn.prop("disabled", false);
+    
+        // call the next question
+        newQ(quiz.results[questionNumber]);
+    }
+
+    /* END FUNCTION DECLARATIONS */
+}
+
+// END REVIEW RESULTS PAGE -----------------------------
 
 /* ---- END PAGE MANAGEMENT FUNCTIONS ---- */
 
@@ -424,12 +531,14 @@ function drawResults() {
 
     // create the array that will hold the created rows
     let newRows = [];
+    let thisRow;
+
     
     // iterate over the scores, create rows, add to the array
     for ( let i = 0; i < storedScores.length; i++ ) {
         newRows.push(createRow(storedScores[i]));
         // assign the row's unsorted index for later reference
-        newRows[i].attr("data-index", i);
+        newRows[i].index = i;
     }
 
     // now sort the rows by score first, then by time remaining
@@ -437,10 +546,10 @@ function drawResults() {
         /* see the note above for the reason I'm
         sorting the rows after creating them and not before */
 
-        let aCorrect = a.children().eq(3).text();
-        let bCorrect = b.children().eq(3).text();
-        let aLeft = convertToSecs(a.children().eq(2).text());
-        let bLeft = convertToSecs(b.children().eq(2).text());
+        let aCorrect = a.row.children().eq(3).text();
+        let bCorrect = b.row.children().eq(3).text();
+        let aLeft = convertToSecs(a.row.children().eq(2).text());
+        let bLeft = convertToSecs(b.row.children().eq(2).text());
 
         if (aCorrect == bCorrect) return ( bLeft - aLeft );
         else return ( bCorrect - aCorrect )
@@ -457,17 +566,23 @@ function drawResults() {
         // This function creates a tr to be added to the table
         // parameter "data" is an object that has all the info about this result
 
-        let newRow = $("<tr>");
+        let newRow = $("<tr>");             // the actual row we're creating
+        let rowObj = {};                    // an object to return
+        let reviewBtn;
         if (!data) {
             // if there are no scores to create, "data" will be "false"
             let emptyCell = $("<td>");
-            emptyCell.attr("colspan", "4");
+            emptyCell.attr("colspan", "5");
             emptyCell.text("No scores to show");
             emptyCell.addClass("no-scores");
             newRow.append(emptyCell);
+            
+            // create an object to return with all the data we'll need
+            rowObj.row = newRow;
+            rowObj.empty = true;
         } else {
             // if there is data, create four tds
-            for ( let i = 0; i < 4; i++ ) {
+            for ( let i = 0; i < 5; i++ ) {
                 newRow.append($("<td>"));
             }
             // then assign the appropriate content to the tds
@@ -475,17 +590,33 @@ function drawResults() {
             newRow.children().eq(1).text(data.inits);
             newRow.children().eq(2).text((data.left==0)?"-":convertToTime(data.left));
             newRow.children().eq(3).text(data.correct);
+            reviewBtn = $("<button>");
+            reviewBtn.text("review");
+            reviewBtn.addClass("review-button");
+            newRow.children().eq(4).append(reviewBtn);
+
+            // create an object to return with all the data we'll need
+            rowObj.row = newRow;
+            rowObj.btn = reviewBtn;
+            rowObj.empty = false;
         };
         
         // send back the completed row
-        return newRow;
+        return rowObj;
     }
 
-    function addRow(row) {
+    function addRow(rowObj) {
         // This function appends a row to the table
-        // parameter "row" is the row to append
+        // parameter "rowObj" is the row object
+        
+        jTableBody.append(rowObj.row);
 
-        jTableBody.append(row);
+        // if there's a button, add the listener
+        if (!rowObj.empty) {
+            rowObj.btn.on("click", function() {
+                reviewResults(storedScores[rowObj.index]);
+            });
+        }
     }
 
     /* END FUNCTION DECLARATIONS */

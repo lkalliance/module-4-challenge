@@ -70,7 +70,7 @@ function takeQuiz() {
     let timeRemaining = startingTime;   // initialize the timer
     let questionNumber = 0;             // tracks what question we're on
     let totalRight = 0;                 // tracks how many correct
-        
+    
     // shuffle the order of the questions
     shuffleMe(quizQs);
     // show the user the correct page
@@ -239,16 +239,17 @@ function takeQuiz() {
     function shuffleMe(arr) {
         // This utility takes an array and shuffles it
         // parameter "arr" is the array to be shuffled
+        // (Thanks to W3docs for this technique)
 
         let rand, temp;
         
         // start a counter at the end of the array
         let counter = arr.length;
-        while (counter > 0) {
+        while (counter != 0) {
+            // choose a random index
+            rand = Math.floor( Math.random() * counter );
             // decrement counter
             counter--;
-            // randomly pick an index up through the current counter
-            rand = Math.floor(Math.random() * counter);
             // swap the random-index element with the counter element
             temp = arr[counter];
             arr[counter] = arr[rand];
@@ -405,6 +406,7 @@ function reviewResults(quiz) {
 
     // show the Quiz section, and customize it to this purpose
     showSection(jQuizSection);
+    jQuizSection.removeClass("quiz");
     jQuizSection.addClass("review");
     // initialize a counter to track what question we're on
     let questionNumber = 0;
@@ -480,9 +482,7 @@ function reviewResults(quiz) {
     /* END FUNCTION DECLARATIONS */
 }
 
-
-
-// END REVIE RESULTS PAGE -----------------------------
+// END REVIEW RESULTS PAGE -----------------------------
 
 /* ---- END PAGE MANAGEMENT FUNCTIONS ---- */
 

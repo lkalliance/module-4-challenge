@@ -98,7 +98,21 @@ main section.visible {
     text-align: left;
 }
 
-#quiz-section li:hover {
+#quiz-section.review li {
+    padding: 8px;
+}
+
+#quiz-section.review li.correct {
+    background-color: green;
+    color: white;
+}
+
+#quiz-section.review li.clicked {
+    border-width: 4px;
+    padding: 5px;
+}
+
+#quiz-section.quiz li:hover {
     background-color: rgb(47, 106, 233);
     color: white;
     cursor: pointer;

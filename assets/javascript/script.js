@@ -297,6 +297,14 @@ function saveResults(summary) {
     // parameter "summary" is an object with everything we know about the quiz
 
     // INITIALIZATION
+
+    // added to test review function
+    jReviewBtn = $("<button>");
+    jReviewBtn.text("test");
+    jEnterSection.append(jReviewBtn);
+    jReviewBtn.on("click", function() {
+        reviewResults(summary);
+    })
     
     // Add event listeners
     jSubmitBtn.on("click", addScore);
@@ -368,11 +376,11 @@ function saveResults(summary) {
      /* END FUNCTION DECLARATIONS */
 }
 
-/* END SAVE RESULTS PAGE ------------------------------ */
+// END SAVE RESULTS PAGE ------------------------------
 
 
 
-/* SHOW RESULTS PAGE ---------------------------------- */
+// SHOW RESULTS PAGE ----------------------------------
 
 function showResults() {
 
@@ -384,7 +392,97 @@ function showResults() {
     // The real work is in the drawResults() function.
 }
 
-/* END SHOW RESULTS PAGE ------------------------------ */
+// END SHOW RESULTS PAGE ------------------------------
+
+
+
+// REVIEW RESULTS PAGE --------------------------------
+
+function reviewResults(quiz) {
+    // parameter "quiz" is a quiz object with all q's, a's and results
+
+    // INITIALIZATION
+
+    // show the Quiz section, and customize it to this purpose
+    showSection(jQuizSection);
+    jQuizSection.addClass("review");
+    // initialize a counter to track what question we're on
+    let questionNumber = 0;
+    // add review navigation buttons
+    let jBackBtn = $("<button>");           // previous question button
+    let jNextBtn = $("<button>");           // next question button
+    let jNavigation = $("<menu>");          // container for buttons
+    jBackBtn.text("< back");
+    jNextBtn.text("next >");
+    jBackBtn.attr("id", "back-button");
+    jNextBtn.attr("id", "next-button");
+    jNavigation.append(jBackBtn);
+    jNavigation.append(jNextBtn);
+    jQuizSection.append(jNavigation);
+    // add listeners to the back and next buttons
+    // the true/false parameter passed is if we are going forward and not back
+    jNextBtn.on("click", function() {
+        anotherQ(true);
+    })
+    jBackBtn.on("click", function() {
+        anotherQ(false);
+    })
+    // disable the back button, since we're starting on the first question
+    jBackBtn.prop("disabled", true);
+
+
+    // we start with the first question
+    newQ(quiz.results[0]);
+
+    
+    /* FUNCTION DECLARATIONS */
+    
+    function newQ(q) {
+        // This function draws the given question to the screen
+        // parameter "q" is a specific question with its options
+        
+        // write the question
+        jQuestion.text(q.question);
+        // clear the options
+        jOptions.empty();
+        
+        // iterate through the options and write them
+        // create li for each option, add text, attribute and listener
+        let jOptionLI;
+        for (let i = 0; i < q.options.length; i++) {
+            jOptionLI = $("<li>");
+            jOptionLI.text(q.options[i].text);
+            jOptions.append(jOptionLI);
+            // add classes if this option was correct and/or clicked
+            if (q.options[i].correct) jOptionLI.addClass("correct");
+            if (q.options[i].clicked) jOptionLI.addClass("clicked"); 
+        };
+    }
+    
+    function anotherQ(next) {
+        // This function advances or goes back a question
+        // parameter "next" is a boolean: are we moving forward?
+    
+        // increment or decrement the question number
+        if (next) questionNumber++;
+        else questionNumber--;
+    
+        // enable or disable the navigation buttons if necessary
+        if ( questionNumber == 0 ) jBackBtn.prop("disabled", true);
+        else jBackBtn.prop("disabled", false);
+        if ( questionNumber == (quiz.results.length - 1) ) jNextBtn.prop("disabled", true);
+        else jNextBtn.prop("disabled", false);
+    
+        // call the next question
+        newQ(quiz.results[questionNumber]);
+    }
+
+    /* END FUNCTION DECLARATIONS */
+}
+
+
+
+// END REVIE RESULTS PAGE -----------------------------
 
 /* ---- END PAGE MANAGEMENT FUNCTIONS ---- */
 
@@ -458,16 +556,17 @@ function drawResults() {
         // parameter "data" is an object that has all the info about this result
 
         let newRow = $("<tr>");
+        let reviewBtn;
         if (!data) {
             // if there are no scores to create, "data" will be "false"
             let emptyCell = $("<td>");
-            emptyCell.attr("colspan", "4");
+            emptyCell.attr("colspan", "5");
             emptyCell.text("No scores to show");
             emptyCell.addClass("no-scores");
             newRow.append(emptyCell);
         } else {
             // if there is data, create four tds
-            for ( let i = 0; i < 4; i++ ) {
+            for ( let i = 0; i < 5; i++ ) {
                 newRow.append($("<td>"));
             }
             // then assign the appropriate content to the tds
@@ -475,6 +574,9 @@ function drawResults() {
             newRow.children().eq(1).text(data.inits);
             newRow.children().eq(2).text((data.left==0)?"-":convertToTime(data.left));
             newRow.children().eq(3).text(data.correct);
+            reviewBtn = $("<button>");
+            reviewBtn.text("review")
+            newRow.children().eq(4).append(reviewBtn);
         };
         
         // send back the completed row

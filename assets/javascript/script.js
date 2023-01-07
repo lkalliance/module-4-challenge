@@ -81,6 +81,8 @@ function takeQuiz() {
     shuffleMe(quizQs);
     // show the user the correct page
     showSection(jQuizSection);
+    jViewBtn.removeClass("visible");
+    jTimer.addClass("btn-success");
     jTimer.text(convertToTime(timeRemaining));      // set the timer view to start
     
     
@@ -157,7 +159,7 @@ function takeQuiz() {
             // this was the last question
 
             // setTimeout to allow the result of the last answer to flash
-            setTimeout(function() { endQuiz() }, 1000);
+            setTimeout(function() { endQuiz(true) }, 1000);
         }
         else {
             // there are more questions, go to the next one
@@ -201,6 +203,7 @@ function takeQuiz() {
         for (let i = 0; i < q.options.length; i++) {
             jOptionLI = $("<li>");
             jOptionBtn = $("<button>");
+            jOptionBtn.addClass("btn btn-primary");
             jOptionBtn.text(q.options[i].text);
             jOptionLI.attr("data-nth",i);
             jOptionLI.append(jOptionBtn);
@@ -221,11 +224,10 @@ function takeQuiz() {
 
         // stop the clock and remove the time remaining text
         stopClock();
-        jTimer.text("");
+        wipeTimer();
+        jViewBtn.addClass("visible");
         // remove event listeners from all option buttons
-        $('#options li').each( function() {
-            $(this).off("click");
-        } );
+        $('#options').empty();
         // if we haven't exited the quiz early, send the user to Save Results page
         if (!stopShort) {
             saveResults({ results: quizQs, correct: totalRight, answered: finished?(questionNumber + 1):questionNumber, left: timeRemaining });
@@ -285,14 +287,29 @@ function takeQuiz() {
         setTimeout(function() {
             $(result).removeClass(newClass);
             result.textContent = "";
-            }, 1000);
+            }, 1100);
+    }
+
+    function wipeTimer() {
+        // This utility removes all the btn- classes from the timer div
+
+        jTimer.removeClass("btn-success");
+        jTimer.removeClass("btn-warning");   
+        jTimer.removeClass("btn-danger");   
     }
 
     function updateClock(remaining) {
         // This utility updates the user view of time remaining
         // parameter "remaining" is the number of seconds left in the quiz
 
+        // clear off all the timer styles, going to add one below
+        wipeTimer();
+        // update the timer's text
         jTimer.text(convertToTime(remaining));
+        // add the appropriate timer color
+        if (remaining <= 10) jTimer.addClass("btn-danger");
+        else if (remaining <= 20) jTimer.addClass("btn-warning");
+        else jTimer.addClass("btn-success");
     }
  
     /* END FUNCTION DECLARATIONS */
@@ -330,11 +347,8 @@ function saveResults(summary) {
 
         // if the initials value is empty, amscray
         // (recursion to avoid multiple listeners on the button)
-        if (jInitialsInput.val().length == 0) {
-            endSubmit();
-            saveResults(summary);
-            return;
-        }
+        console.log(jInitialsInput.val());
+        if (jInitialsInput.val().length == 0) return;
 
         // add the initials the user added and the date
         summary.inits = jInitialsInput.val();
@@ -345,6 +359,8 @@ function saveResults(summary) {
         if(typeof(localStorage.getItem("highScores"))=="string") {
             scores = JSON.parse(localStorage.getItem("highScores"));
         }
+
+        console.log(scores);
 
         // add the latest result to the array, and then store
         scores.push(summary);
@@ -405,6 +421,8 @@ function showResults() {
 function reviewResults(quiz) {
     // parameter "quiz" is a quiz object with all q's, a's and results
 
+    console.log(quiz);
+
     /* FUNCTION EXPRESSIONS */
 
     const endReview = function() {
@@ -441,8 +459,8 @@ function reviewResults(quiz) {
     jTryAgainRevBtn.on("click", endReview);
     // disable the back button, since we're starting on the first question...
     jReviewBackBtn.prop("disabled", true);
-    // ...but make sure the next button is active
-    jReviewNextBtn.prop("disabled", false);
+    // ...but make sure the next button is active if there's more than one to show
+    jReviewNextBtn.prop("disabled", (quiz.answered < 2));
 
 
 
@@ -470,7 +488,8 @@ function reviewResults(quiz) {
             jOptionLI.text(q.options[i].text);
             jOptions.append(jOptionLI);
             // add classes if this option was correct and/or clicked
-            if (q.options[i].correct) jOptionLI.addClass("correct");
+            if (q.options[i].correct) jOptionLI.addClass("btn btn-success");
+            else jOptionLI.addClass("btn btn-primary");
             if (q.options[i].clicked) jOptionLI.addClass("clicked"); 
         };
     }
@@ -478,19 +497,41 @@ function reviewResults(quiz) {
     function anotherQ(next) {
         // This function advances or goes back a question
         // parameter "next" is a boolean: are we moving forward?
+
+        console.log("Current question # is " + questionNumber);
     
         // increment or decrement the question number
         if (next) questionNumber++;
         else questionNumber--;
+
+        console.log("Now the question # is " + questionNumber)
+        console.log("and there were " + quiz.answered + " total answered");
     
         // enable or disable the navigation buttons if necessary
         if ( questionNumber == 0 ) jReviewBackBtn.prop("disabled", true);
         else jReviewBackBtn.prop("disabled", false);
-        if ( questionNumber == (quiz.results.length - 1) ) jReviewNextBtn.prop("disabled", true);
+        if ( questionNumber == (quiz.answered - 1) ) jReviewNextBtn.prop("disabled", true);
         else jReviewNextBtn.prop("disabled", false);
     
         // call the next question
         newQ(quiz.results[questionNumber]);
+    }
+
+    function isAnswered(question) {
+        // This utility determines if the user answered
+        // parameter "question" is the question object
+        // returns a boolean value
+
+        let wellIsIt = false;
+
+        console.log(question);
+
+        // iterate over the responses and see if one is clicked
+        for ( let i = 0; i < question.options.length; i++ ) {
+            if ( question.options[i].clicked ) wellIsIt = true;
+        }
+
+        return wellIsIt;
     }
 
     /* END FUNCTION DECLARATIONS */
@@ -604,7 +645,7 @@ function drawResults() {
             newRow.children().eq(3).text(data.correct);
             reviewBtn = $("<button>");
             reviewBtn.text("review");
-            reviewBtn.addClass("review-button");
+            reviewBtn.addClass("btn btn-sm btn-warning rounded-pill");
             newRow.children().eq(4).append(reviewBtn);
         };
         

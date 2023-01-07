@@ -112,7 +112,9 @@ function takeQuiz() {
         
         if( (questionNumber + 1) == quizQs.length) {
             // this was the last question
-            endQuiz(true);
+            
+            // setTimeout to allow the result of the last answer to flash
+            setTimeout(function() { endQuiz() }, 1000);
         }
         else {
             // there are more questions, go to the next one
@@ -141,8 +143,9 @@ function takeQuiz() {
             // our time went to or below zero.
             timeRemaining = 0;
             questionNumber++;
-            endQuiz();
             updateClock(0);
+            // setTimeout to allow the result of the last answer to flash
+            setTimeout(function() { endQuiz() }, 1000);
             return;
         } else {
             // still time left, update the clock and keep going
@@ -152,7 +155,9 @@ function takeQuiz() {
         
         if( (questionNumber + 1) == quizQs.length) {
             // this was the last question
-            endQuiz(true);
+
+            // setTimeout to allow the result of the last answer to flash
+            setTimeout(function() { endQuiz() }, 1000);
         }
         else {
             // there are more questions, go to the next one
@@ -503,19 +508,33 @@ function drawResults() {
     // This utility empties and redraws the High Scores table
 
     // clear out all the existing rows
-    let jTableBody = $("tbody");
+    const jTableBody = $("tbody");
     jTableBody.empty();
+
+    // to avoid accumulation of listeners, remove this one
+    jTableBody.off("click");
 
     let storedScores = localStorage.getItem("highScores");
     
     if (typeof(storedScores) != "string") {
         // no stored scores, add the special row and leave
-        addRow(createRow(false));
+        let emptyRow = createRow(false);
+        jTableBody.append(emptyRow);
         return;
     }
     
     // parse the string, then create rows
     storedScores = JSON.parse(storedScores);
+
+    // add the delegated listener for the buttons
+    // this listener not applied globally, so not 
+    jTableBody.on("click", "button", function(e) {
+        e.preventDefault();
+
+        // grab the tr element
+        let row = e.target.parentNode.parentNode;
+        reviewResults(storedScores[row.dataset.nth]);
+    })
 
 
     /* A NOTE ON THE METHOD HERE:
@@ -531,14 +550,12 @@ function drawResults() {
 
     // create the array that will hold the created rows
     let newRows = [];
-    let thisRow;
-
     
     // iterate over the scores, create rows, add to the array
     for ( let i = 0; i < storedScores.length; i++ ) {
         newRows.push(createRow(storedScores[i]));
         // assign the row's unsorted index for later reference
-        newRows[i].index = i;
+        newRows[i].attr("data-nth", i);
     }
 
     // now sort the rows by score first, then by time remaining
@@ -546,10 +563,10 @@ function drawResults() {
         /* see the note above for the reason I'm
         sorting the rows after creating them and not before */
 
-        let aCorrect = a.row.children().eq(3).text();
-        let bCorrect = b.row.children().eq(3).text();
-        let aLeft = convertToSecs(a.row.children().eq(2).text());
-        let bLeft = convertToSecs(b.row.children().eq(2).text());
+        let aCorrect = a.children().eq(3).text();
+        let bCorrect = b.children().eq(3).text();
+        let aLeft = convertToSecs(a.children().eq(2).text());
+        let bLeft = convertToSecs(b.children().eq(2).text());
 
         if (aCorrect == bCorrect) return ( bLeft - aLeft );
         else return ( bCorrect - aCorrect )
@@ -557,7 +574,7 @@ function drawResults() {
 
     // now add the rows to the table
     for ( i = 0; i < newRows.length; i++ ) {
-        addRow(newRows[i]);
+        jTableBody.append(newRows[i]);
     }
 
     /* FUNCTION DECLARATIONS */
@@ -567,7 +584,6 @@ function drawResults() {
         // parameter "data" is an object that has all the info about this result
 
         let newRow = $("<tr>");             // the actual row we're creating
-        let rowObj = {};                    // an object to return
         let reviewBtn;
         if (!data) {
             // if there are no scores to create, "data" will be "false"
@@ -575,11 +591,7 @@ function drawResults() {
             emptyCell.attr("colspan", "5");
             emptyCell.text("No scores to show");
             emptyCell.addClass("no-scores");
-            newRow.append(emptyCell);
-            
-            // create an object to return with all the data we'll need
-            rowObj.row = newRow;
-            rowObj.empty = true;
+            newRow.append(emptyCell);  
         } else {
             // if there is data, create four tds
             for ( let i = 0; i < 5; i++ ) {
@@ -594,33 +606,18 @@ function drawResults() {
             reviewBtn.text("review");
             reviewBtn.addClass("review-button");
             newRow.children().eq(4).append(reviewBtn);
-
-            // create an object to return with all the data we'll need
-            rowObj.row = newRow;
-            rowObj.btn = reviewBtn;
-            rowObj.empty = false;
         };
         
         // send back the completed row
-        return rowObj;
-    }
-
-    function addRow(rowObj) {
-        // This function appends a row to the table
-        // parameter "rowObj" is the row object
-        
-        jTableBody.append(rowObj.row);
-
-        // if there's a button, add the listener
-        if (!rowObj.empty) {
-            rowObj.btn.on("click", function() {
-                reviewResults(storedScores[rowObj.index]);
-            });
-        }
+        return newRow;
     }
 
     /* END FUNCTION DECLARATIONS */
 }
+
+
+
+/* GLOBAL FUNCTION DECLARATIONS */
 
 function clearScores() {
     // This function clears the high scores from local storage,
@@ -679,3 +676,5 @@ function convertToDate(dateString) {
     let reformattedDate = months[(justDate[1]-1)] + " " + parseInt(justDate[2]) + ", " + justDate[0];
     return reformattedDate;
 }
+
+/* END GLOBAL FUNCTION DECLARATIONS */

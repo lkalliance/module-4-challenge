@@ -30,7 +30,7 @@ const jResult = $("#result");                        // result indicator contain
 // iterable array of sections
 const sections = [ jStartSection, jQuizSection, jEnterSection, jScoresSection ];  
 
-const startingTime = 90;        // clock starts at this time
+const startingTime = 30;        // clock starts at this time
 const penalty = 5;              // amount of seconds penalty for wrong answer
 
 
@@ -72,6 +72,8 @@ function takeQuiz() {
 
     // INITIALIZATION
 
+    console.clear();
+
     // declare some variables to scope them for this function
     let mainTimer;                      // variable to hold setInterval
     let timeRemaining = startingTime;   // initialize the timer
@@ -97,7 +99,7 @@ function takeQuiz() {
         timeRemaining--;
         updateClock(timeRemaining);
         if(timeRemaining<=0) {
-            endQuiz();
+            endQuiz(false);
         }
     }
     
@@ -105,7 +107,7 @@ function takeQuiz() {
         // This function is for when a user answers a question correctly
         
         e.preventDefault();
-        
+
         // clear the previous result
         wipeResult();
         // show the new result
@@ -116,16 +118,15 @@ function takeQuiz() {
         quizQs[questionNumber].options[e.target.parentNode.dataset.nth].clicked=true;
         // increment the running total of correct answers
         totalRight++;
+        // increment the question number
+        questionNumber++;
         
-        if( (questionNumber + 1) == quizQs.length) {
+        if( questionNumber == quizQs.length) {
             // this was the last question
-            
-            // setTimeout to allow the result of the last answer to flash
-            endQuiz();
+            endQuiz(true);
         }
         else {
             // there are more questions, go to the next one
-            questionNumber++;
             newQ(quizQs[questionNumber]);
         }
     }
@@ -134,7 +135,7 @@ function takeQuiz() {
         // This function is for when a user answers a question incorrectly
         
         e.preventDefault();
-        
+
         // clear the previous result
         wipeResult();
         // show the new result
@@ -146,16 +147,16 @@ function takeQuiz() {
         // remove penalty seconds from timer
         timeRemaining -= penalty;
         stopClock();    // so user won't flip if clock was about to turn 
+        // increment the question number
+        questionNumber++;
         
         // check if that exhausts the timer
         if (timeRemaining <=0) {
             // our time went to or below zero.
             timeRemaining = 0;
-            questionNumber++;
             updateClock(0);
-            endQuiz();
-            // setTimeout to allow the result of the last answer to flash
-            // setTimeout(function() { endQuiz() }, 1000);
+            // if that was the last question anyway, make sure get credit
+            endQuiz((questionNumber==quizQs.length));
             return;
         } else {
             // still time left, update the clock and keep going
@@ -163,15 +164,12 @@ function takeQuiz() {
             startClock();
         }
         
-        if( (questionNumber + 1) == quizQs.length) {
+        if( questionNumber == quizQs.length) {
             // this was the last question
-
-            // setTimeout to allow the result of the last answer to flash
             endQuiz(true);
         }
         else {
             // there are more questions, go to the next one
-            questionNumber++;
             newQ(quizQs[questionNumber]);
         }
     }
@@ -230,6 +228,8 @@ function takeQuiz() {
         // parameter "finished" is whether the user got to the end
         // parameter "stopShort" is whether we exited before the quiz was done
 
+        console.log(finished);
+
         // remove event listeners from all option buttons
         jOptions.empty();
         // clear the last question
@@ -246,7 +246,7 @@ function takeQuiz() {
             jViewBtn.addClass("visible");
             // if we haven't exited the quiz early, send the user to Save Results page
             if (!stopShort) {
-                saveResults({ results: quizQs, correct: totalRight, answered: finished?(questionNumber + 1):questionNumber, left: timeRemaining });
+                saveResults({ results: quizQs, correct: totalRight, answered: questionNumber, left: timeRemaining });
             }
         }, 1000);
     }
@@ -354,7 +354,7 @@ function saveResults(summary) {
     jTimer.removeClass("visible");
     jViewBtn.addClass("visible");
     // fill in the summary details on the user's result
-    jTimeLeft.text((summary.left==0)?"You ran out of time.":("You had " + convertToTime(summary.left) + " remaining."));
+    jTimeLeft.text((summary.answered < quizQs.length)?"You ran out of time.":("You had " + convertToTime(summary.left) + " remaining."));
     let phrase = (summary.answered == summary.correct)?("all " + summary.correct + " right."):(summary.correct + " right.");
     jFinalScore.text("You answered " + summary.answered + " questions, and got " + phrase);
     
@@ -365,7 +365,6 @@ function saveResults(summary) {
 
         // if the initials value is empty, amscray
         // (recursion to avoid multiple listeners on the button)
-        console.log(jInitialsInput.val());
         if (jInitialsInput.val().length == 0) return;
 
         // add the initials the user added and the date
@@ -377,8 +376,6 @@ function saveResults(summary) {
         if(typeof(localStorage.getItem("highScores"))=="string") {
             scores = JSON.parse(localStorage.getItem("highScores"));
         }
-
-        console.log(scores);
 
         // add the latest result to the array, and then store
         scores.push(summary);
@@ -441,8 +438,6 @@ function showResults() {
 
 function reviewResults(quiz) {
     // parameter "quiz" is a quiz object with all q's, a's and results
-
-    console.log(quiz);
 
     /* FUNCTION EXPRESSIONS */
 
@@ -521,15 +516,10 @@ function reviewResults(quiz) {
     function anotherQ(next) {
         // This function advances or goes back a question
         // parameter "next" is a boolean: are we moving forward?
-
-        console.log("Current question # is " + questionNumber);
     
         // increment or decrement the question number
         if (next) questionNumber++;
         else questionNumber--;
-
-        console.log("Now the question # is " + questionNumber)
-        console.log("and there were " + quiz.answered + " total answered");
     
         // enable or disable the navigation buttons if necessary
         if ( questionNumber == 0 ) jReviewBackBtn.prop("disabled", true);
@@ -547,8 +537,6 @@ function reviewResults(quiz) {
         // returns a boolean value
 
         let wellIsIt = false;
-
-        console.log(question);
 
         // iterate over the responses and see if one is clicked
         for ( let i = 0; i < question.options.length; i++ ) {

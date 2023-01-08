@@ -206,7 +206,6 @@ main section.visible {
     background-color: var(--quiz-hover);
 }
 
-#quiz-section menu,
 #quiz-section #review-try-again {
     display: none;
 }
@@ -216,12 +215,17 @@ main section.visible {
     text-transform: uppercase;
 }
 
-#quiz-section.review menu {
+#quiz-section menu {
     display: block;
-    position: absolute;
+    width: 100%;
+    visibility: hidden;
     margin: 0 auto;
     padding: 0;
     white-space: nowrap;
+}
+
+#quiz-section.review menu {
+    visibility: visible;
 }
 
 #quiz-section.review #review-try-again {
@@ -230,7 +234,7 @@ main section.visible {
 }
 
 #quiz-question {
-    padding-top: 38px;
+    margin-top: 15px;
 }
 
 #result {
@@ -323,4 +327,9 @@ main section.visible {
     background-color: green;
     color: white;
     font-size: .5em;
-} */
+} 
+
+
+#no-submit-button {
+    
+}*/

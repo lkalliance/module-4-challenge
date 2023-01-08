@@ -5,11 +5,11 @@ const jStartSection = $("#start-quiz-section");      // invitation section
 const jQuizSection = $("#quiz-section");             // quiz section
 const jEnterSection = $("#enter-score-section");     // enter score section
 const jScoresSection = $("#high-scores-section");    // high scores section
+const jTryAgain = $("#go-again-button");             // section with the "Try Again" button
 
 // Buttons
 const jStartBtn = $("#start-quiz-button");           // "Start Quiz" button
 const jTryAgainBtn = $("#try-again-button");         // retake quiz button (from high scores)
-const jNoSubmitBtn = $("#no-submit-button");         // don't submit, retake
 const jClearBtn = $("#clear-button");                // clear high scores button
 const jViewBtn = $("#view-scores-button");           // go to high scores button
 const jSubmitBtn = $("#submit-score-button");        // submit score button
@@ -52,9 +52,6 @@ function initialize() {
     jTryAgainBtn.on("click", function() {
         takeQuiz();
     });
-    jTryAgainRevBtn.on("click", function() {
-        takeQuiz();
-    });
     drawResults();
  }
 
@@ -80,14 +77,15 @@ function takeQuiz() {
     
     // shuffle the order of the questions
     shuffleMe(quizQs);
+    // clear all the "clicked" indicators
+    let allClear = clearClicks();
     // show the user the correct page and button
     showSection(jQuizSection);
-    jViewBtn.removeClass("visible");
-    jTimer.addClass("visible");
+    showButton(jTimer);
+    jTryAgain.toggleClass("visible", false);
     // set up the timer
     jTimer.text(convertToTime(timeRemaining));
     jTimer.addClass("btn-success");
-    
     
 
     /* FUNCTION EXPRESSIONS */
@@ -313,6 +311,18 @@ function takeQuiz() {
         jResult.text("");
     }
 
+    function clearClicks() {
+        // This utility clears all the clicks from the questions object
+
+        for (let i = 0; i < quizQs.length; i++ ) {
+            for (let ii = 0; ii < quizQs[i].options.length; ii++) {
+                quizQs[i].options[ii].clicked = false;
+            }
+        }
+
+        return false;
+    }
+
     function updateClock(remaining) {
         // This utility updates the user view of time remaining
         // parameter "remaining" is the number of seconds left in the quiz
@@ -343,12 +353,11 @@ function saveResults(summary) {
 
     // add event listeners
     jSubmitBtn.on("click", addScore);
-    jNoSubmitBtn.on("click", notAddingScore);
-    // make this section visible and hide the others
+    jTryAgainBtn.on("click", notAddingScore);
+    // show the correct section and button
     showSection(jEnterSection);
-    // hide timer, show high scores button;
-    jTimer.removeClass("visible");
-    jViewBtn.addClass("visible");
+    showButton(jViewBtn);
+    jTryAgain.toggleClass("visible", true);
     // fill in the summary details on the user's result
     jTimeLeft.text((summary.answered < quizQs.length)?"You ran out of time.":("You had " + convertToTime(summary.left) + " remaining."));
     let phrase = (summary.answered == summary.correct)?("all " + summary.correct + " right."):(summary.correct + " right.");
@@ -390,6 +399,7 @@ function saveResults(summary) {
         
         // our job here is done, go to cleanup
         endSubmit();
+        jTryAgainBtn.off("click", this);
         // send the user to take the quiz again
         takeQuiz();
      }
@@ -399,7 +409,6 @@ function saveResults(summary) {
 
         // remove listeners (to avoid multiple listeners accumulating)
         jSubmitBtn.off("click");
-        jNoSubmitBtn.off("click");
         // clear out the initials field
         jInitialsInput.val("");
      }
@@ -417,11 +426,10 @@ function showResults() {
 
     // INITIALIZATION
 
-    // show the High Scores section, hide the others
+    // show the correct section and button
     showSection(jScoresSection);
-    // hide both the timer and the view results button
-    jTimer.removeClass("visible");
-    jViewBtn.removeClass("visible");
+    showButton(jClearBtn);
+    jTryAgain.toggleClass("visible", true);
 
     // The real work is in the drawResults() function.
 }
@@ -441,8 +449,8 @@ function reviewResults(quiz) {
         // remove listeners to prevent multiple instances later
         jReviewBackBtn.off("click");
         jReviewNextBtn.off("click");
-        jViewBtn.off("click", endReview);
-        jTryAgainRevBtn.off("click", endReview);
+        jViewBtn.off("click", this);
+        jTryAgainBtn.off("click", this);
         // reset the quiz section to be ready to take a quiz
         jQuizSection.removeClass("review");
         jQuizSection.addClass("quiz");
@@ -456,9 +464,9 @@ function reviewResults(quiz) {
     showSection(jQuizSection);
     jQuizSection.removeClass("quiz");
     jQuizSection.addClass("review");
-    // hide the timer, show the high scores button
-    jTimer.removeClass("visible");
-    jViewBtn.addClass("visible");
+    // show the correct button
+    showButton(jViewBtn);
+    jTryAgain.toggleClass("visible", true);
     // initialize a counter to track what question we're on
     let questionNumber = 0;
     // add listeners to the back and next buttons
@@ -471,7 +479,7 @@ function reviewResults(quiz) {
     })
     // add a listener to the exit point buttons to clean things up
     jViewBtn.on("click", endReview);
-    jTryAgainRevBtn.on("click", endReview);
+    jTryAgainBtn.on("click", endReview);
     // disable the back button, since we're starting on the first question...
     jReviewBackBtn.prop("disabled", true);
     // ...but make sure the next button is active if there's more than one to show
@@ -700,6 +708,20 @@ function showSection(show) {
             sections[i].toggleClass("visible", false);
         }
     }
+}
+
+function showButton(show) {
+    // This evaluates the three buttons in the header, hides them except one
+    // parameter "show" is the button to keep visible
+
+    // hide all of them (if one more comes along, we'll iterate instead of this
+    jViewBtn.removeClass("visible");
+    jTimer.removeClass("visible");
+    jClearBtn.removeClass("visible");
+
+    // show the correct one
+    show.addClass("visible");
+
 }
 
 function convertToTime(secs) {

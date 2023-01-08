@@ -13,10 +13,12 @@
 <body>
     <header>
         <h1 id="title" class="fw-light fs-4">Coding Quiz Challenge</h1>
-        <button id="view-scores-button" class="btn btn-sm btn-primary rounded-pill visible">View high scores</button>
-        <div id="timer" class="btn btn-sm rounded-pill"></div>
     </header>
     <main>
+        <section id="top-buttons" class="visible">
+            <button id="view-scores-button" class="btn btn-sm btn-primary rounded-pill visible">View high scores</button>
+            <div id="timer" class="btn btn-lg rounded-pill btn-success"></div>
+        </section>
         <section id="start-quiz-section" class="mt-4 visible">
             <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad, earum harum illo officia fugit, adipisci nam id quasi, tempora tenetur perferendis corrupti eligendi deleniti at sapiente. Voluptatibus quidem perferendis fugit.</p>
             <button id="start-quiz-button" class="btn btn-outline-primary">Start the quiz</button>
@@ -27,7 +29,7 @@
                 <button id="review-try-again" class="btn btn-outline-primary col-6">Try the quiz again</button>
                 <button id="review-next" class="btn btn-primary col-3">next &gt;</button>
             </menu>
-            <div class="row">
+            <div id="quiz-question" class="row">
                 <h2 id="question" class="mb-3 col-6"></h2>
                 <ul id="options" class="col-6">
                 </ul>

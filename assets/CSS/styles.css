@@ -70,22 +70,14 @@ header h1 {
     padding: 12px;
 }
 
-header button.btn-primary {
+#top-buttons button,
+#top-buttons div {
     display: none;
+    white-space: nowrap;
 }
 
-header button.btn-primary.visible {
-    display: block;
-}
-
-header div#timer {
-    display: none;
-    text-align: center;
-}
-
-header div#timer.btn-success,
-header div#timer.btn-warning,
-header div#timer.btn-danger {
+#top-buttons button.visible,
+#top-buttons div.visible {
     display: block;
 }
 
@@ -104,6 +96,7 @@ main section {
 
 main section.visible {
     display: block;
+    position: relative;
 }
 
 
@@ -207,8 +200,14 @@ main section.visible {
     white-space: nowrap;
 }
 
+#quiz-question {
+    padding-top: 32px;
+}
+
 #result {
-    display: inline-block;
+    display: block;
+    position: absolute;
+    top: 0;
     border-radius: 4px;
     padding: 5px 30px;
     color: white;
@@ -218,19 +217,19 @@ main section.visible {
 }
 
 #result.correct {
-    background-color: green;
-    animation-name: result;
+    background-color: var(--bs-success);
+  /*  animation-name: result;
     animation-duration: .8s;
     animation-delay: .2s;
-    animation-fill-mode: forwards;
+    animation-fill-mode: forwards; */
 }
 
 #result.wrong {
-    background-color: red;
-    animation-name: result;
+    background-color: var(--bs-danger);
+    /* animation-name: result;
     animation-duration: .8s;
     animation-delay: .2s;
-    animation-fill-mode: forwards;
+    animation-fill-mode: forwards; */
 }
 
 

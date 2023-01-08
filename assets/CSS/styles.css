@@ -4,23 +4,24 @@
     --quiz-hover: blue;
 }
 
-/* * {
-    font-family: Arial, Helvetica, sans-serif; 
-} */
+*:focus {
+    outline: none;
+}
 
 body {
     font-size: 16px;
     padding: 10px;
 }
 
+
 /* h1,
 h2 {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-} */
+} 
 
 h1 {
     text-align: center;
-}
+}*/
 
 /* button {
     border: 1px solid green;
@@ -58,35 +59,55 @@ button:disabled:hover {
 
 /* ---- HEADER STYLES ---- */
 
-header {
+/* header {
     display: flex;
     justify-content: space-evenly;
-}
+} */
 
-header h1 {
+/* header h1 {
     position: absolute;
     top: 0;
     left: 0;
     padding: 12px;
+} */
+
+header {
+    width: 100%;
 }
 
 #top-buttons button,
 #top-buttons div {
     display: none;
     white-space: nowrap;
+    width: 180px;
 }
 
 #top-buttons button.visible,
 #top-buttons div.visible {
-    display: block;
+    display: inline-block;
+}
+
+header #timer {
+    cursor: default;
+}
+
+header #timer.btn-success:hover {
+    background-color: var(--bs-success);
+}
+
+header #timer.btn-warning:hover {
+    background-color: var(--bs-warning);
+}
+
+header #timer.btn-danger:hover {
+    background-color: var(--bs-danger);
 }
 
 
 /* ---- MAIN CONTENT SECTION STYLES ---- */
 
 main {
-    margin: 0 20%;
-    min-width: 400px;
+    margin: 0 10%;
 }
 
 main section {
@@ -111,6 +132,7 @@ main section.visible {
 #quiz-section ul {
     list-style-type: none;
     padding-left: 0;
+    padding-right: 0;
 }
 
 #quiz-section li {
@@ -184,7 +206,8 @@ main section.visible {
     background-color: var(--quiz-hover);
 }
 
-#quiz-section menu {
+#quiz-section menu,
+#quiz-section #review-try-again {
     display: none;
 }
 
@@ -194,25 +217,31 @@ main section.visible {
 }
 
 #quiz-section.review menu {
-    display: flex;
+    display: block;
+    position: absolute;
     margin: 0 auto;
     padding: 0;
     white-space: nowrap;
 }
 
+#quiz-section.review #review-try-again {
+    display: block;
+    margin: 0 auto;
+}
+
 #quiz-question {
-    padding-top: 32px;
+    padding-top: 38px;
 }
 
 #result {
     display: block;
     position: absolute;
-    top: 0;
+    top: 6px;
     border-radius: 4px;
-    padding: 5px 30px;
+    padding: 3px 0;
     color: white;
     font-size: .75em;
-    text-align: left;
+    text-align: center;
     text-transform: uppercase;
 }
 
@@ -260,7 +289,7 @@ main section.visible {
 
 #high-scores-section table thead {
     background-color: #cccccc;
-    text-transform: uppercase;
+    text-transform: capitalize;
 }
 
 #high-scores-section th,

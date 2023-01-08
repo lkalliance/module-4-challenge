@@ -30,7 +30,7 @@ const jResult = $("#result");                        // result indicator contain
 // iterable array of sections
 const sections = [ jStartSection, jQuizSection, jEnterSection, jScoresSection ];  
 
-const startingTime = 30;        // clock starts at this time
+const startingTime = 90;        // clock starts at this time
 const penalty = 5;              // amount of seconds penalty for wrong answer
 
 
@@ -71,8 +71,6 @@ function initialize() {
 function takeQuiz() {
 
     // INITIALIZATION
-
-    console.clear();
 
     // declare some variables to scope them for this function
     let mainTimer;                      // variable to hold setInterval
@@ -228,8 +226,6 @@ function takeQuiz() {
         // parameter "finished" is whether the user got to the end
         // parameter "stopShort" is whether we exited before the quiz was done
 
-        console.log(finished);
-
         // remove event listeners from all option buttons
         jOptions.empty();
         // clear the last question
@@ -294,7 +290,7 @@ function takeQuiz() {
         // parameter "correct" is if question was answered correctly
 
         // set the content
-        result.textContent = correct?"Your last response was correct":"Your last response was incorrect";
+        result.textContent = correct?"correct":"incorrect";
         // which class
         let newClass = correct?"correct":"wrong";
         // add the class, and then reset after a half second
@@ -650,11 +646,22 @@ function drawResults() {
             for ( let i = 0; i < 5; i++ ) {
                 newRow.append($("<td>"));
             }
+            // if the initials are too long, going to dot-dot-dot them
+            let inits = "";
+            if (data.inits.length < 8) inits = data.inits;
+            else {
+                inits = data.inits.substring(0, 6) + "...";
+            }
             // then assign the appropriate content to the tds
             newRow.children().eq(0).text(convertToDate(data.date));
-            newRow.children().eq(1).text(data.inits);
+            newRow.children().eq(1).text(inits);
             newRow.children().eq(2).text((data.left==0)?"-":convertToTime(data.left));
             newRow.children().eq(3).text(data.correct);
+
+            // add classes to make these two columns disappear responsivley
+            newRow.children().eq(0).addClass("d-none d-md-table-cell");
+            newRow.children().eq(2).addClass("d-none d-sm-table-cell");
+
             reviewBtn = $("<button>");
             reviewBtn.text("review");
             reviewBtn.addClass("btn btn-sm btn-warning rounded-pill");

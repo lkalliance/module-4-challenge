@@ -11,51 +11,59 @@
     <title>Coding Quiz Challenge</title>
 </head>
 <body>
-    <header>
-        <h1 id="title" class="fw-light fs-4">Coding Quiz Challenge</h1>
+    <header class="container">
+        <div class="row align-items-center justify-content-between">
+            <h1 id="title" class="fw-light col-md-8 text-center text-md-start">Coding Quiz Challenge</h1>
+            <section id="top-buttons" class="col-md-4 text-center text-md-end visible">
+                <button id="view-scores-button" class="btn btn-sm btn-primary rounded-pill visible">View high scores</button>
+                <div id="timer" class="btn btn-sm rounded-pill btn-success"></div>
+            </section>
+        </div>
     </header>
     <main>
-        <section id="top-buttons" class="visible">
-            <button id="view-scores-button" class="btn btn-sm btn-primary rounded-pill visible">View high scores</button>
-            <div id="timer" class="btn btn-lg rounded-pill btn-success"></div>
-        </section>
         <section id="start-quiz-section" class="mt-4 visible">
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad, earum harum illo officia fugit, adipisci nam id quasi, tempora tenetur perferendis corrupti eligendi deleniti at sapiente. Voluptatibus quidem perferendis fugit.</p>
+            <h2 class="fw-light fs-3">Click below to take the Coding Quiz Challenge!</h2>
+            <p>
+                You will have 90 seconds to answer ten multiple-choice questions on the topic of [insert topic  here]. Be careful, each wrong answer removes an extra five seconds off of the clock!
+            </p>
+            <p>
+                Save your score at the end of the quiz, and review any past saved results to see where your answers were spot-on...and where they logged an error. Best of luck for a bug-free result!
+            </p>
             <button id="start-quiz-button" class="btn btn-outline-primary">Start the quiz</button>
         </section>
         <section id="quiz-section" class="container mt-4 quiz">
-            <menu id="review-navigation" class="row justify-content-center btn-group btn-group-sm mb-3">
-                <button id="review-back" class="btn btn-primary col-3">&lt; back</button>
-                <button id="review-try-again" class="btn btn-outline-primary col-6">Try the quiz again</button>
-                <button id="review-next" class="btn btn-primary col-3">next &gt;</button>
+            <menu id="review-navigation" class="btn-group btn-group-sm mb-2">
+                <button id="review-back" class="btn btn-primary">&lt; back</button>
+                <button id="review-next" class="btn btn-primary">next &gt;</button>
             </menu>
             <div id="quiz-question" class="row">
-                <h2 id="question" class="mb-3 col-6"></h2>
-                <ul id="options" class="col-6">
+                <h3 id="question" class="mb-3 col-sm-6"></h3>
+                <ul id="options" class="col-sm-6">
                 </ul>
                 <aside id="result" class="text-align-center">
                 </aside>
             </div>
+            <button id="review-try-again" class="btn btn-sm btn-outline-primary">Try the quiz again</button>
         </section>
         <section id="enter-score-section" class="mt-4">
-            <h2>All done!</h2>
+            <h3>All done!</h3>
             <p>
                 <span id="time-remaining">this is the time remaining</span>
                 <span id="final-score">this is the final score</span>
             </p>
-            <div id="submit-group" class="input-group input-group-small justify-content-center mb-3">
+            <div id="submit-group" class="input-group input-group-sm justify-content-center mb-2">
                 <input type="text" id="enter-inits" placeholder="Enter your initials" class="form-control form-control-sm">
                 <button id="submit-score-button" type="button" class="btn btn-sm btn-primary">Submit</button>
-                <button id="no-submit-button" class="btn btn-sm btn-outline-primary">Retake the quiz instead</button>
             </div>
+            <button id="no-submit-button" class="btn btn-sm btn-outline-primary">Retake the quiz instead</button>
         </section>
         <section id="high-scores-section" class="mt-4 table-responsive-sm">
-            <table id="scores" class="table table-striped table-sm">
+            <table id="scores" class="table table-striped table-sm fs-6">
                 <thead>
                     <tr>
-                        <th>date</th>
+                        <th class="d-none d-md-table-cell">date</th>
                         <th>user</th>
-                        <th>time left</th>
+                        <th class="d-none d-sm-table-cell">time left</th>
                         <th>score</th>
                         <th></th>
                     </tr>

@@ -4,47 +4,53 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./assets/CSS/normalize.css">
+    <!-- link rel="stylesheet" href="./assets/CSS/normalize.css" -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <link rel="stylesheet" href="./assets/CSS/styles.css">
-    <script src="./assets/javascript/jquery-3.6.3.min.js"></script>
     <script src="./assets/javascript/quizquestions.js"></script>
     <title>Coding Quiz Challenge</title>
 </head>
 <body>
     <header>
-        <button id="view-scores-button">View High Scores</button>
-        <div id="timer"></div>
+        <h1 id="title" class="fw-light fs-4">Coding Quiz Challenge</h1>
     </header>
     <main>
-        <section id="start-quiz-section" class="visible">
-            <h1 id="title">Coding Quiz Challenge</h1>
-            <button id="start-quiz-button">start the quiz</button>
+        <section id="top-buttons" class="visible">
+            <button id="view-scores-button" class="btn btn-sm btn-primary rounded-pill visible">View high scores</button>
+            <div id="timer" class="btn btn-lg rounded-pill btn-success"></div>
         </section>
-        <section id="quiz-section" class="quiz">
-            <h2 id="question">
-            </h2>
-            <ul id="options">
-            </ul>
-            <aside id="result">
-            </aside>
-            <menu id="review-navigation">
-                <button id="review-back">&lt; back</button>
-                <button id="review-try-again">try the quiz again</button>
-                <button id="review-next">next &gt;</button>
+        <section id="start-quiz-section" class="mt-4 visible">
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Ad, earum harum illo officia fugit, adipisci nam id quasi, tempora tenetur perferendis corrupti eligendi deleniti at sapiente. Voluptatibus quidem perferendis fugit.</p>
+            <button id="start-quiz-button" class="btn btn-outline-primary">Start the quiz</button>
+        </section>
+        <section id="quiz-section" class="container mt-4 quiz">
+            <menu id="review-navigation" class="row justify-content-center btn-group btn-group-sm mb-3">
+                <button id="review-back" class="btn btn-primary col-3">&lt; back</button>
+                <button id="review-try-again" class="btn btn-outline-primary col-6">Try the quiz again</button>
+                <button id="review-next" class="btn btn-primary col-3">next &gt;</button>
             </menu>
+            <div id="quiz-question" class="row">
+                <h2 id="question" class="mb-3 col-6"></h2>
+                <ul id="options" class="col-6">
+                </ul>
+                <aside id="result" class="text-align-center">
+                </aside>
+            </div>
         </section>
-        <section id="enter-score-section">
+        <section id="enter-score-section" class="mt-4">
             <h2>All done!</h2>
             <p>
                 <span id="time-remaining">this is the time remaining</span>
                 <span id="final-score">this is the final score</span>
             </p>
-            <input type="text" id="enter-inits" placeholder="Enter your initials">
-            <button id="submit-score-button">submit</button>
-            <button id="no-submit-button">retake the quiz instead</button>
+            <div id="submit-group" class="input-group input-group-small justify-content-center mb-3">
+                <input type="text" id="enter-inits" placeholder="Enter your initials" class="form-control form-control-sm">
+                <button id="submit-score-button" type="button" class="btn btn-sm btn-primary">Submit</button>
+                <button id="no-submit-button" class="btn btn-sm btn-outline-primary">Retake the quiz instead</button>
+            </div>
         </section>
-        <section id="high-scores-section">
-            <table id="scores">
+        <section id="high-scores-section" class="mt-4 table-responsive-sm">
+            <table id="scores" class="table table-striped table-sm">
                 <thead>
                     <tr>
                         <th>date</th>
@@ -57,12 +63,16 @@
                 <tbody>
                 </tbody>
             </table>
-            <button id="try-again-button">try again</button>
-            <button id="clear-button">clear scores</button>
+            <div class="btn-group btn-group-sm">
+                <button id="clear-button" class="btn btn-primary">Clear scores</button>
+                <button id="try-again-button" class="btn btn-outline-primary">Try the quiz again</button>
+            </div>
         </section>
     </main>
-
-
+    
+    
+    <script src="./assets/javascript/jquery-3.6.3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js" integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V" crossorigin="anonymous"></script>
     <script src="./assets/javascript/script.js"></script>
 </body>
 </html>

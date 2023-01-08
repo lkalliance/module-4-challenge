@@ -237,7 +237,6 @@ function takeQuiz() {
         setTimeout( function() {
             wipeTimer();
             wipeResult();
-            jViewBtn.addClass("visible");
             // if we haven't exited the quiz early, send the user to Save Results page
             if (!stopShort) {
                 saveResults({ results: quizQs, correct: totalRight, answered: questionNumber, left: timeRemaining });
@@ -409,6 +408,7 @@ function saveResults(summary) {
 
         // remove listeners (to avoid multiple listeners accumulating)
         jSubmitBtn.off("click");
+        jTryAgainBtn.off("click", notAddingScore);
         // clear out the initials field
         jInitialsInput.val("");
      }

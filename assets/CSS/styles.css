@@ -333,3 +333,9 @@ main section.visible {
 #no-submit-button {
     
 }*/
+
+@media (hover: none) {
+    #quiz-section li:hover button {
+        background-color: var(--bs-primary);
+    }
+}

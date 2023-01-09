@@ -26,6 +26,7 @@ const jTimer = $("#timer");                          // countdown clock containe
 const jQuestion = $("#question");                    // quiz question container
 const jOptions = $("#options");                      // quiz answer options
 const jResult = $("#result");                        // result indicator container
+const jSummary = $("#user-and-score");               // quiz review info
 
 // iterable array of sections
 const sections = [ jStartSection, jQuizSection, jEnterSection, jScoresSection ];  
@@ -468,6 +469,7 @@ function reviewResults(quiz) {
     jTryAgain.toggleClass("visible", true);
     // initialize a counter to track what question we're on
     let questionNumber = 0;
+    let displayInits = "";
     // add listeners to the back and next buttons
     // the true/false parameter passed is if we are going forward and not back
     jReviewBackBtn.on("click", function() {
@@ -483,6 +485,10 @@ function reviewResults(quiz) {
     jReviewBackBtn.prop("disabled", true);
     // ...but make sure the next button is active if there's more than one to show
     jReviewNextBtn.prop("disabled", (quiz.answered < 2));
+    // store this snippet to insert above each question
+    if(quiz.inits.length > 7) displayInits = (quiz.inits.substring(0, 6) + "...");
+    else displayInits = quiz.inits;
+    const userSummary = '<aside id="user-and-score" class="fs-6"><strong>User:</strong> ' + displayInits + ' <strong>Score:</strong> ' + quiz.correct + '</aside>';
 
 
 
@@ -498,7 +504,7 @@ function reviewResults(quiz) {
         // parameter "q" is a specific question with its options
 
         // write the question
-        jQuestion.text(q.question);
+        jQuestion.html((userSummary + q.question));
         // clear the options
         jOptions.empty();
         
@@ -671,7 +677,7 @@ function drawResults() {
 
             reviewBtn = $("<button>");
             reviewBtn.text("review");
-            reviewBtn.addClass("btn btn-sm btn-warning rounded-pill");
+            reviewBtn.addClass("btn btn-sm btn-warning");
             newRow.children().eq(4).append(reviewBtn);
         };
         

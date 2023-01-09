@@ -6,9 +6,15 @@
 
 body {
     font-size: 16px;
-    padding: 10px;
+  /*  padding: 10px; */
 }
 
+p {
+    text-align: center;
+    width: 75%;
+    max-width: 600px;
+    margin: 0 auto 20px;
+}
 
 /* h1,
 h2 {
@@ -69,6 +75,7 @@ button:disabled:hover {
 
 header {
     width: 100%;
+    margin-top: 10px;
 }
 
 #top-buttons button,
@@ -202,7 +209,8 @@ main section.visible {
     background-color: var(--quiz-hover);
 }
 
-#quiz-section #review-try-again {
+#quiz-section #review-try-again,
+#quiz-section #user-and-score {
     display: none;
 }
 
@@ -212,8 +220,8 @@ main section.visible {
 }
 
 #quiz-section menu {
-    display: block;
-    width: 100%;
+  /*  display: block;*/
+    width: 50%; 
     visibility: hidden;
     margin: 0 auto;
     padding: 0;
@@ -227,6 +235,13 @@ main section.visible {
 #quiz-section.review #review-try-again {
     display: block;
     margin: 0 auto;
+}
+
+#quiz-section.review #user-and-score {
+    display: block;
+    margin: 0 0 1rem;
+    text-align: center;
+    font-size: .8em;
 }
 
 #quiz-question {

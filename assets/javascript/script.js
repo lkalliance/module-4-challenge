@@ -354,6 +354,11 @@ function saveResults(summary) {
     // add event listeners
     jSubmitBtn.on("click", addScore);
     jTryAgainBtn.on("click", notAddingScore);
+    jInitialsInput.on("keyup", function(e) {
+        if (e.keyCode == 13) {
+            addScore();
+        }
+    })
     // show the correct section and button
     showSection(jEnterSection);
     showButton(jViewBtn);
@@ -409,6 +414,7 @@ function saveResults(summary) {
         // remove listeners (to avoid multiple listeners accumulating)
         jSubmitBtn.off("click");    
         jTryAgainBtn.off("click", notAddingScore);
+        jInitialsInput.off("keyup");
         // clear out the initials field
         jInitialsInput.val("");
      }

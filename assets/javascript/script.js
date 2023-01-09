@@ -51,7 +51,7 @@ function initialize() {
     });
     jTryAgainBtn.on("click", function() {
         takeQuiz();
-    });
+    })
     drawResults();
  }
 
@@ -234,14 +234,14 @@ function takeQuiz() {
         jViewBtn.off("click", stopQuiz);
         
         // delay a second before the rest, so the user can see his last result
-        setTimeout( function() {
+     //   setTimeout( function() {
             wipeTimer();
             wipeResult();
             // if we haven't exited the quiz early, send the user to Save Results page
             if (!stopShort) {
                 saveResults({ results: quizQs, correct: totalRight, answered: questionNumber, left: timeRemaining });
             }
-        }, 1000);
+     //   }, 1000);
     }
 
     
@@ -400,14 +400,13 @@ function saveResults(summary) {
         endSubmit();
         jTryAgainBtn.off("click", this);
         // send the user to take the quiz again
-        takeQuiz();
      }
 
      function endSubmit() {
         // This function tidies up as the user leaves the page
 
         // remove listeners (to avoid multiple listeners accumulating)
-        jSubmitBtn.off("click");
+        jSubmitBtn.off("click");    
         jTryAgainBtn.off("click", notAddingScore);
         // clear out the initials field
         jInitialsInput.val("");

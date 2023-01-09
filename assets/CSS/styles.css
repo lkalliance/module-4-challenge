@@ -210,7 +210,7 @@ main section.visible {
 }
 
 #quiz-section #review-try-again,
-#quiz-section #user-and-score {
+#quiz-section #review-key {
     display: none;
 }
 
@@ -232,9 +232,9 @@ main section.visible {
     visibility: visible;
 }
 
-#quiz-section.review #review-try-again {
+#quiz-section.review #review-key {
     display: block;
-    margin: 0 auto;
+    font-size: .7em;
 }
 
 #quiz-section.review #user-and-score {

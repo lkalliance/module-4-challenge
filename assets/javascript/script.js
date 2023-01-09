@@ -1,3 +1,11 @@
+/* This Javascript is meant to operate almost entirely inside of functions,
+with only consts defined globally. This leads to lots of adding and removing of
+listeners where they are function-specific.
+
+In this document, I have denoted comments that describe what's going on or demarcates
+sections with "//" notation. I have encased more "meta" notes in "/*" notation. */
+
+
 // GRAB VARIOUS CONTAINERS AND BUTTONS
 // Sections (or pages)
 const jTopNavSection = $("#top-buttons");            // either timer or high scores
@@ -38,9 +46,11 @@ const penalty = 5;              // amount of seconds penalty for wrong answer
 initialize();
 
 
-// Set up all the listeners on the various buttons
 
 function initialize() {
+    // This function does what page preparation can be done globally
+
+    // add some listeners
     jStartBtn.on("click", function() {
         takeQuiz();
     })
@@ -53,15 +63,25 @@ function initialize() {
     jTryAgainBtn.on("click", function() {
         takeQuiz();
     })
+
+    // draw the High Scores table
     drawResults();
  }
 
 
 
 
-/* ---- PAGE MANAGEMENT FUNCTIONS ---- */
+// ---- PAGE MANAGEMENT FUNCTIONS ---- 
 
-// Each page has a function that manages the user experience for it
+/* Each page has a function that manages the user experience for it.
+Each is set up in the following way:
+
+--Initialization
+--Function expressions (comes before Initialization if it must)
+--Actions
+--Function declarations */
+
+
 
 
 // TAKE THE QUIZ PAGE ------------------------------
@@ -79,22 +99,27 @@ function takeQuiz() {
     // shuffle the order of the questions
     shuffleMe(quizQs);
     // clear all the "clicked" indicators
+    // set as a variable to hold execution until it's finished
     let allClear = clearClicks();
-    // show the user the correct page and button
+    // show the user the correct page and header button
     showSection(jQuizSection);
     showButton(jTimer);
+    // make sure the "Try Again" button is hidden
     jTryAgain.toggleClass("visible", false);
     // set up the timer
     jTimer.text(convertToTime(timeRemaining));
     jTimer.addClass("btn-success");
     
 
-    /* FUNCTION EXPRESSIONS */
+
+    // FUNCTION EXPRESSIONS
     
     const countdown = function() {
-        // this function tick-tock decrements the game timer
+        // This function tick-tock decrements the game timer
+
         timeRemaining--;
         updateClock(timeRemaining);
+        // check to see if the timer has reached zero
         if(timeRemaining<=0) {
             endQuiz(false);
         }
@@ -161,6 +186,7 @@ function takeQuiz() {
             startClock();
         }
         
+        // now check if that was the last question
         if( questionNumber == quizQs.length) {
             // this was the last question
             endQuiz(true);
@@ -171,24 +197,30 @@ function takeQuiz() {
         }
     }
     
+    /* This function is depracated, though I have left it in here
+    for historical record. Originally there was an exit point to the 
+    quiz without waiting for it to finish. There are now no such exit points. */
+    
     const stopQuiz = function() {
         // This function stop the quiz before it ends
         endQuiz(false, true);
     }
     
-    /* END FUNCTION EXPRESSIONS */
+    // END FUNCTION EXPRESSIONS
     
     
-    // add a listener to View High Scores that stops the quiz
-    jViewBtn.on("click", stopQuiz);
+    
+    // ACTIONS
+    
     // start the main countdown
     mainTimer = setInterval(countdown, 1000);
     // READYSETGO! Go to the first question
     newQ(quizQs[0]);
     
     
+
     
-    /* FUNCTION DECLARATIONS */
+    // FUNCTION DECLARATIONS
     
     function newQ(q) {
         // This function puts a new question on the screen
@@ -225,29 +257,21 @@ function takeQuiz() {
         // parameter "finished" is whether the user got to the end
         // parameter "stopShort" is whether we exited before the quiz was done
 
-        // remove event listeners from all option buttons
+        // remove all option buttons with their listeners
         jOptions.empty();
         // clear the last question
         jQuestion.text("");
         // stop the clock
         stopClock();
-        // remove the quiz-specific listener from "View High Scores"
-        jViewBtn.off("click", stopQuiz);
-        
-        // delay a second before the rest, so the user can see his last result
-     //   setTimeout( function() {
-            wipeTimer();
-            wipeResult();
-            // if we haven't exited the quiz early, send the user to Save Results page
-            if (!stopShort) {
-                saveResults({ results: quizQs, correct: totalRight, answered: questionNumber, left: timeRemaining });
-            }
-     //   }, 1000);
+        // cleat classes from the timer
+        wipeTimer();
+        // get rid of the result div
+        wipeResult();
+        // if we haven't exited the quiz early, send the user to Save Results page
+        if (!stopShort) {
+            saveResults({ results: quizQs, correct: totalRight, answered: questionNumber, left: timeRemaining });
+        }
     }
-
-    
-    
-    /* UTILITY FUNCTIONS */
     
     // Utilities to start and stop the clock to make code more readable
     function startClock() {
@@ -283,8 +307,7 @@ function takeQuiz() {
     }
 
     function showResult(correct) {
-        // This utility flashes the result of the question
-        // This result just flashes for a second on screen
+        // This utility reveals the result of the question
         // parameter "correct" is if question was answered correctly
 
         // set the content
@@ -312,7 +335,8 @@ function takeQuiz() {
     }
 
     function clearClicks() {
-        // This utility clears all the clicks from the questions object
+        // This utility clears all the click indicators from the questions object
+        // (required in case the user returns immediately without saving the score)
 
         for (let i = 0; i < quizQs.length; i++ ) {
             for (let ii = 0; ii < quizQs[i].options.length; ii++) {
@@ -337,10 +361,12 @@ function takeQuiz() {
         else jTimer.addClass("btn-success");
     }
  
-    /* END FUNCTION DECLARATIONS */
+    // END FUNCTION DECLARATIONS
 }
 
 // END TAKE THE QUIZ PAGE ------------------------------
+
+
 
 
 
@@ -359,16 +385,21 @@ function saveResults(summary) {
             addScore();
         }
     })
-    // show the correct section and button
+    // show the correct section and header button
     showSection(jEnterSection);
     showButton(jViewBtn);
+    // make sure the "Try Again" button is visible
     jTryAgain.toggleClass("visible", true);
     // fill in the summary details on the user's result
     jTimeLeft.text((summary.answered < quizQs.length)?"You ran out of time.":("You had " + convertToTime(summary.left) + " remaining."));
     let phrase = (summary.answered == summary.correct)?("all " + summary.correct + " right."):(summary.correct + " right.");
     jFinalScore.text("You answered " + summary.answered + " questions, and got " + phrase);
+
+
+    /* That's all there is for setup. The rest of it is user-initiated */
+
     
-    /* FUNCTION DECLARATIONS */
+    // FUNCTION DECLARATIONS
 
     function addScore() {
         // This function adds the score to the High Scores list
@@ -404,8 +435,8 @@ function saveResults(summary) {
         
         // our job here is done, go to cleanup
         endSubmit();
+        // remove this listener from the "Try Again" button
         jTryAgainBtn.off("click", this);
-        // send the user to take the quiz again
      }
 
      function endSubmit() {
@@ -419,10 +450,12 @@ function saveResults(summary) {
         jInitialsInput.val("");
      }
 
-     /* END FUNCTION DECLARATIONS */
+     // END FUNCTION DECLARATIONS
 }
 
 // END SAVE RESULTS PAGE ------------------------------
+
+
 
 
 
@@ -437,10 +470,13 @@ function showResults() {
     showButton(jClearBtn);
     jTryAgain.toggleClass("visible", true);
 
-    // The real work is in the drawResults() function.
+    /* That's all there is. The real work is in the drawResults() function,
+    which is global so it can be called from multiple page managers */
 }
 
 // END SHOW RESULTS PAGE ------------------------------
+
+
 
 
 
@@ -449,7 +485,8 @@ function showResults() {
 function reviewResults(quiz) {
     // parameter "quiz" is a quiz object with all q's, a's and results
 
-    /* FUNCTION EXPRESSIONS */
+
+    // FUNCTION EXPRESSIONS
 
     const endReview = function() {
         // remove listeners to prevent multiple instances later
@@ -462,7 +499,9 @@ function reviewResults(quiz) {
         jQuizSection.addClass("quiz");
     }
 
-    /* END FUNCTION EXPRESSIONS */
+    // END FUNCTION EXPRESSIONS
+
+
 
     // INITIALIZATION
 
@@ -470,11 +509,12 @@ function reviewResults(quiz) {
     showSection(jQuizSection);
     jQuizSection.removeClass("quiz");
     jQuizSection.addClass("review");
-    // show the correct button
+    // show the correct header button and the Try Again button
     showButton(jViewBtn);
     jTryAgain.toggleClass("visible", true);
     // initialize a counter to track what question we're on
     let questionNumber = 0;
+    // we're going to need this in a moment
     let displayInits = "";
     // add listeners to the back and next buttons
     // the true/false parameter passed is if we are going forward and not back
@@ -498,12 +538,14 @@ function reviewResults(quiz) {
 
 
 
-    // we start with the first question
+    // ACTIONS
+
+    // Only one: start with the first question
     newQ(quiz.results[0]);
 
 
     
-    /* FUNCTION DECLARATIONS */
+    // FUNCTION DECLARATIONS
     
     function newQ(q) {
         // This function draws the given question to the screen
@@ -515,7 +557,7 @@ function reviewResults(quiz) {
         jOptions.empty();
         
         // iterate through the options and write them
-        // create li for each option, add text, attribute and listener
+        // create li for each option, add text and class
         let jOptionLI;
         for (let i = 0; i < q.options.length; i++) {
             jOptionLI = $("<li>");
@@ -546,6 +588,10 @@ function reviewResults(quiz) {
         newQ(quiz.results[questionNumber]);
     }
 
+    /* This function is depracated, though I have left it in here
+    for historical record. There is a more concise way to make sure
+    only answered questions are shown. */
+    
     function isAnswered(question) {
         // This utility determines if the user answered
         // parameter "question" is the question object
@@ -561,16 +607,20 @@ function reviewResults(quiz) {
         return wellIsIt;
     }
 
-    /* END FUNCTION DECLARATIONS */
+    // END FUNCTION DECLARATIONS
 }
 
 // END REVIEW RESULTS PAGE -----------------------------
 
-/* ---- END PAGE MANAGEMENT FUNCTIONS ---- */
+
+
+// ---- END PAGE MANAGEMENT FUNCTIONS ---- 
 
 
 
-/* ---- GLOBAL UTILITES ---- */
+
+
+// ---- GLOBAL FUNCTION DECLARATIONS ----
 
 function drawResults() {
     // This utility empties and redraws the High Scores table
@@ -578,7 +628,6 @@ function drawResults() {
     // clear out all the existing rows
     const jTableBody = $("tbody");
     jTableBody.empty();
-
     // to avoid accumulation of listeners, remove this one
     jTableBody.off("click");
 
@@ -613,7 +662,9 @@ function drawResults() {
     existing order, and then sort the rows with their information encapsulated in 
     an attribute.
 
-    Here's hoping I add those buttons now! */
+    Here's hoping I add those buttons now!
+    
+    (I did!) */
 
 
     // create the array that will hold the created rows
@@ -645,14 +696,15 @@ function drawResults() {
         jTableBody.append(newRows[i]);
     }
 
-    /* FUNCTION DECLARATIONS */
+
+    // FUNCTION DECLARATIONS
 
     function createRow(data) {
         // This function creates a tr to be added to the table
         // parameter "data" is an object that has all the info about this result
 
         let newRow = $("<tr>");             // the actual row we're creating
-        let reviewBtn;
+        let reviewBtn;                      // for later if we need it
         if (!data) {
             // if there are no scores to create, "data" will be "false"
             let emptyCell = $("<td>");
@@ -676,11 +728,10 @@ function drawResults() {
             newRow.children().eq(1).text(inits);
             newRow.children().eq(2).text((data.left==0)?"-":convertToTime(data.left));
             newRow.children().eq(3).text(data.correct);
-
             // add classes to make these two columns disappear responsivley
             newRow.children().eq(0).addClass("d-none d-md-table-cell");
             newRow.children().eq(2).addClass("d-none d-sm-table-cell");
-
+            // now create and append the "Review" button
             reviewBtn = $("<button>");
             reviewBtn.text("review");
             reviewBtn.addClass("btn btn-sm btn-warning");
@@ -691,16 +742,13 @@ function drawResults() {
         return newRow;
     }
 
-    /* END FUNCTION DECLARATIONS */
+    // END FUNCTION DECLARATIONS
 }
 
 
-
-/* GLOBAL FUNCTION DECLARATIONS */
-
 function clearScores() {
     // This function clears the high scores from local storage,
-    // then redraws the (empty) table, then send the user back to the page
+    // then redraws the (empty) table, then sends the user back to the page
 
     localStorage.removeItem("highScores");
     drawResults();
@@ -725,10 +773,12 @@ function showButton(show) {
     // This evaluates the three buttons in the header, hides them except one
     // parameter "show" is the button to keep visible
 
-    // hide all of them (if one more comes along, we'll iterate instead of this
+    // hide all of them
     jViewBtn.removeClass("visible");
     jTimer.removeClass("visible");
     jClearBtn.removeClass("visible");
+
+    /* If someday I add another button for this, I'll switch this to an iteration */
 
     // show the correct one
     show.addClass("visible");
@@ -770,4 +820,4 @@ function convertToDate(dateString) {
     return reformattedDate;
 }
 
-/* END GLOBAL FUNCTION DECLARATIONS */
+// END GLOBAL FUNCTION DECLARATIONS

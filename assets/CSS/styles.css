@@ -4,10 +4,6 @@
     --quiz-hover: blue;
 }
 
-*:focus {
-    outline: none;
-}
-
 body {
     font-size: 16px;
     padding: 10px;
@@ -286,6 +282,10 @@ main section.visible {
 #enter-score-section input {
     max-width: 200px;
     min-width: 120px;
+}
+
+#enter-score-section input:focus {
+    background-color: #eeeeee;
 }
 
 

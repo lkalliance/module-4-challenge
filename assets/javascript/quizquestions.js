@@ -1,92 +1,92 @@
 var quizQs = [
     {
-        question: "Whose single-season home run record did Babe Ruth surpass in 1927?",
+        question: "What shortcut character is usually used to signify a jQuery assignment or action?",
         options: [
-            { text: "Babe Ruth", correct: true },
-            { text: "Rogers Hornsby", correct: false },
-            { text: "Roger Maris", correct: false },
-            { text: "George Sisler", correct: false }
+            { text: "$", correct: true },
+            { text: "%", correct: false },
+            { text: "#", correct: false },
+            { text: "&", correct: false }
         ]
     },
     {
-        question: "In how many consecutive games did Pete Rose get a hit in 1978?",
+        question: "Which of these is NOT a legitimate pseudo-class?",
         options: [
-            { text: "44", correct: true },
-            { text: "56", correct: false },
-            { text: "30", correct: false },
-            { text: "Less than 20", correct: false }
+            { text: ":middle-child", correct: true },
+            { text: ":focus", correct: false },
+            { text: ":hover", correct: false },
+            { text: ":first-of-type", correct: false }
         ]
     },
     {
-        question: "Which of these teams did NOT break a 50-year or longer title drought in this century?",
+        question: "Who is the acknowledged inventor of Javascript?",
         options: [
-            { text: "The Cleveland Guardians", correct: true },
-            { text: "The Boston Red Sox", correct: false },
-            { text: "The San Francisco Giants", correct: false },
-            { text: "The Chicago Cubs", correct: false },
+            { text: "Brendan Eich", correct: true },
+            { text: "James Javorsky", correct: false },
+            { text: "Cornelius 'ScriptMan' Sinclair", correct: false },
+            { text: "Josiah Springfield", correct: false },
         ]
     },
     {
-        question: "What is the distance from the pitching rubber to home plate?",
+        question: "Which of the following is NOT a valid tag in the HTML5 spec?",
         options: [
-            { text: "60 feet, six inches", correct: true },
-            { text: "50 feet, eight inches", correct: false },
-            { text: "One third of the length of a trip around the bases", correct: false },
-            { text: "It varies from ballpark to ballpark", correct: false }
+            { text: "<headrow>", correct: true },
+            { text: "<thead>", correct: false },
+            { text: "<head>", correct: false },
+            { text: "<header>", correct: false }
         ]
     },
     {
-        question: "Which of these players hit at least 30 home runs in his final season in MLB?",
+        question: "Which of these is a valid Javascript variable declaration?",
         options: [
-            { text: "David Ortiz", correct: true },
-            { text: "Mickey Mantle", correct: false },
-            { text: "Albert Pujols", correct: false },
-            { text: "Jimmie Foxx", correct: false }
+            { text: "const [variable name]", correct: true },
+            { text: "variable [variable name]", correct: false },
+            { text: "num [variable name]", correct: false },
+            { text: "jsv [variable name]", correct: false }
         ]
     },
     {
-        question: "How many home runs did Reggie Jackson hit in the 1977 World Series?",
+        question: "Which of these selectors would your browser definitively honor in applying a CSS rule?",
         options: [
-            { text: "5", correct: true },
-            { text: "3", correct: false },
-            { text: "4", correct: false },
-            { text: "6", correct: false }
+            { text: "The most specific selector", correct: true },
+            { text: "The first applicable selector", correct: false },
+            { text: "The selector with the most rules attached", correct: false },
+            { text: "The selector that gave it a good review", correct: false }
         ]
     },
     {
-        question: "Who was on the mound for George Brett's famous 'Pine Tar Incident'?",
+        question: "Which of these is NOT an event type in today's Javascript?",
         options: [
-            { text: "Goose Gossage", correct: true },
-            { text: "Paul Splittorff", correct: false },
-            { text: "Ron Guidry", correct: false },
-            { text: "Sparky Lyle", correct: false }
+            { text: "hover", correct: true },
+            { text: "click", correct: false },
+            { text: "load", correct: false },
+            { text: "keyup", correct: false }
         ]
     },
     {
-        question: "Who is (currently) credited with the invention of baseball?",
+        question: "How many columns does a 'flex' container have by default?",
         options: [
-            { text: "Alexander Cartwright", correct: true },
-            { text: "Abner Doubleday", correct: false },
-            { text: "Cap Anson", correct: false },
-            { text: "Charles Comiskey", correct: false }
+            { text: "Flexbox does not use 'rows' and 'columns'.", correct: true },
+            { text: "12", correct: false },
+            { text: "1", correct: false },
+            { text: "Whatever the coder defines in the page's CSS", correct: false }
         ]
     },
     {
-        question: "What team won the very first World Series?",
+        question: "Which of these HTML tags is self-closing?",
         options: [
-            { text: "The Boston Americans", correct: true },
-            { text: "The Pittsburgh Pirates", correct: false },
-            { text: "The New York Yankees", correct: false },
-            { text: "The Arizona Diamondbacks", correct: false }
+            { text: "<link>", correct: true },
+            { text: "<script>", correct: false },
+            { text: "<a>", correct: false },
+            { text: "<colgroup>", correct: false }
         ]
     },
     {
-        question: "Where was the first MLB night game played?",
+        question: "What is a global Javascript variable?",
         options: [
-            { text: "Crosley Field in Cincinnati", correct: true },
-            { text: "Forbes Field in Pittsburgh", correct: false },
-            { text: "The Polo Grounds in New York", correct: false },
-            { text: "Shibe Park in Philadelphia", correct: false }
+            { text: "One that can be accessed from any function", correct: true },
+            { text: "One defined inside a Unicode library", correct: false },
+            { text: "One declared with the 'global' keyword", correct: false },
+            { text: "One which has a name that uses only round characters", correct: false }
         ]
     },
 ]

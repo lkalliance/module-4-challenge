@@ -45,6 +45,8 @@ Finally, there was one thing I had in the code that was eliminated during bugfix
 
 From the start I intended to make the Javascript operate mostly inside functions. There are some global functions and a lot of global const values (almost all of them references to DOM containers), but all the real stuff happens inside of functions. The biggest issue that came of that decision was in the area of event listeners: some of them had to reference locally-scoped callbacks, which meant they had to be assigned locally, which meant they often had to be REMOVED as well to prevent the accumulation of multiple listeners of the same type. I have assigned them globally where I can.
 
+In a "real" web app of this type, I would get the questions from a server, likely pre-randomized and with the options pre-randomized as well. This is a purely front-end project, however, so the questions and options are hard-coded into the Javascript. It is flexible, though: I could add as many or as few questions as I wished. I suppose I could even put in a library of many more questions and construct a given quiz from a random selection...but that would be more appropriate for the back end.
+
 Readers of the code will find a LOT of comments I have inserted. You should not be at a loss for explanation of what each function does and how it does it.
 
 ## Credits

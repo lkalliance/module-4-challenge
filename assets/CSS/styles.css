@@ -1,3 +1,9 @@
+/* I am letting Bootstrap handle most of the styling.
+What is below is specifics for the page, including
+a couple of bootstrap color overrides. */
+
+
+
 /* ---- GENERAL USE STYLES ---- */
 
 :root {
@@ -6,83 +12,40 @@
 
 body {
     font-size: 16px;
-  /*  padding: 10px; */
 }
 
 p {
-    text-align: center;
     width: 75%;
     max-width: 600px;
     margin: 0 auto 20px;
-}
-
-/* h1,
-h2 {
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
-} 
-
-h1 {
     text-align: center;
-}*/
-
-/* button {
-    border: 1px solid green;
-    border-radius: 6px;
-    padding: 8px 10px;
-    color: green;
-    background-color: white;
-    font-size: .75em;
-    text-transform: uppercase;
-} */
+}
 
 .btn-primary:hover,
 .btn-outline-primary:hover {
-    background-color: blue;
+    background-color: var(--quiz-hover);
 }
 
-.btn:disabled {
+.btn:disabled,
+.btn:disabled:hover {
     background-color: rgba(13, 110, 253, .5);
     opacity: 1;
 }
 
-button:disabled:hover {
-    background-color: white;
-    color: black;
-}
-
-
-/* ---- KEYFRAMES ---- */
-
-@keyframes result {
-    from { opacity: 1; }
-    to { opacity: 0; }
-}
-
 
 /* ---- HEADER STYLES ---- */
-
-/* header {
-    display: flex;
-    justify-content: space-evenly;
-} */
-
-/* header h1 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 12px;
-} */
 
 header {
     width: 100%;
     margin-top: 10px;
 }
 
+/* Only one button at a time can show in the header, these manage that */
 #top-buttons button,
 #top-buttons div {
     display: none;
-    white-space: nowrap;
     width: 180px;
+    white-space: nowrap;
 }
 
 #top-buttons button.visible,
@@ -90,10 +53,7 @@ header {
     display: inline-block;
 }
 
-header #timer {
-    cursor: default;
-}
-
+/* Removing hover effedts on the header buttons */
 header #timer.btn-success:hover {
     background-color: var(--bs-success);
 }
@@ -106,6 +66,12 @@ header #timer.btn-danger:hover {
     background-color: var(--bs-danger);
 }
 
+/* Though the timer is styled as a button, it isn't and should't have a pointer */
+header #timer {
+    cursor: default;
+}
+
+
 
 /* ---- MAIN CONTENT SECTION STYLES ---- */
 
@@ -113,11 +79,11 @@ main {
     margin: 0 10%;
 }
 
+/* Not all sections should be showing, these rules manag that */
 main section {
     display: none;
     text-align: center;
 }
-
 main section.visible {
     display: block;
     position: relative;
@@ -125,13 +91,19 @@ main section.visible {
 
 
 
+/* There are indidivual styles for each "page" */
+
+
+
 /* ---- QUIZ PAGE STYLES ---- */
+/* The Quiz page serves two purposes: to take a quiz and to review a quiz.
+Thus the sets of rules that differentiate between the two. */
 
-/* #quiz-section h2 {
-    height: 2.5em;
-    margin-bottom: 0;
-} */
+#quiz-question {
+    margin-top: 15px;
+}
 
+/* These rules are for the question options */
 #quiz-section ul {
     list-style-type: none;
     padding-left: 0;
@@ -140,45 +112,14 @@ main section.visible {
 
 #quiz-section li {
     margin-bottom: 3px;
-    /* border: 1px solid black;
-    border-radius: 4px;
-    padding: 0;
-    background-color: rgb(146, 173, 231); */
     text-align: left;
 }
-
-/* #quiz-section.review li {
-    padding: 8px;
-}
-
-#quiz-section.review li.correct {
-    background-color: green;
-    color: white;
-}
-
-#quiz-section.review li.clicked {
-    border-width: 4px;
-    padding: 5px;
-}
-
-#quiz-section.quiz li:hover {
-    background-color: rgb(47, 106, 233);
-    color: white;
-    cursor: pointer;
-} */
 
 #quiz-section ul button,
 #quiz-section ul li.btn {
     display: block;
     width: 100%;
- /*   height: 100%;
-    border: none;
-    padding: 8px;
-    background-color: transparent;
-    color: black; */
     text-align: left;
- /*   font-size: 1em;
-    text-transform: none; */
 }
 
 #quiz-section ul li.btn {
@@ -204,50 +145,11 @@ main section.visible {
     background-color: var(--bs-success);
 }
 
-
 #quiz-section li:hover button {
     background-color: var(--quiz-hover);
 }
 
-#quiz-section #review-try-again,
-#quiz-section #review-key {
-    display: none;
-}
-
-#quiz-section #review-back,
-#quiz-section #review-next {
-    text-transform: uppercase;
-}
-
-#quiz-section menu {
-  /*  display: block;*/
-    width: 50%; 
-    visibility: hidden;
-    margin: 0 auto;
-    padding: 0;
-    white-space: nowrap;
-}
-
-#quiz-section.review menu {
-    visibility: visible;
-}
-
-#quiz-section.review #review-key {
-    display: block;
-    font-size: .7em;
-}
-
-#quiz-section.review #user-and-score {
-    display: block;
-    margin: 0 0 1rem;
-    text-align: center;
-    font-size: .8em;
-}
-
-#quiz-question {
-    margin-top: 15px;
-}
-
+/* These rules are for the result display */
 #result {
     display: block;
     position: absolute;
@@ -262,19 +164,52 @@ main section.visible {
 
 #result.correct {
     background-color: var(--bs-success);
-  /*  animation-name: result;
-    animation-duration: .8s;
-    animation-delay: .2s;
-    animation-fill-mode: forwards; */
 }
 
 #result.wrong {
     background-color: var(--bs-danger);
-    /* animation-name: result;
-    animation-duration: .8s;
-    animation-delay: .2s;
-    animation-fill-mode: forwards; */
 }
+
+
+/* These rules show and hide and style the elements that should
+only show for the reviewing status */
+#quiz-section #review-key {
+    display: none;
+}
+
+#quiz-section.review #review-key {
+    display: block;
+    font-size: .7em;
+}
+
+
+/* The navigation menu for the quiz review is hidden rather than
+display: none, because I want to preserve the spacing */
+#quiz-section menu {
+    visibility: hidden;
+    width: 50%; 
+    margin: 0 auto;
+    padding: 0;
+    white-space: nowrap;
+}
+
+#quiz-section.review menu {
+    visibility: visible;
+}
+
+#quiz-section #review-back,
+#quiz-section #review-next {
+    text-transform: uppercase;
+}
+
+/* The user-and-score identifier is dynamically inserted by JS */
+#quiz-section.review #user-and-score {
+    display: block;
+    margin: 0 0 1rem;
+    text-align: center;
+    font-size: .8em;
+}
+
 
 
 /* ---- ENTER SCORES STYLES ---- */
@@ -286,10 +221,6 @@ main section.visible {
     align-items: center;
 }
 
-#enter-score-section p {
-    text-align: center;
-}
-
 #enter-score-section #submit-group {
     margin: 0 auto;
 }
@@ -299,6 +230,8 @@ main section.visible {
     min-width: 120px;
 }
 
+/* The blue "focus" outline is removed via Bootstrap,
+this rule gives some slight visual evidence of focus. */
 #enter-score-section input:focus {
     background-color: #eeeeee;
 }
@@ -316,38 +249,12 @@ main section.visible {
     vertical-align: middle;
 }
 
-/* #high-scores-section table {
-    margin: 10px auto;
-    border-collapse: collapse;
-}
-
-#high-scores-section td,
-#high-scores-section th {
-    min-width: 50px;
-    padding: 8px 12px;
-    text-align: center;
-}
-
-#high-scores-section th {
-    background-color: green;
-    color: white;
-}
-
-#high-scores-section tr:nth-child(even) {
-    background-color: #ddd;
-}
-
-#high-scores-section .review-button {
-    padding: 4px;
-    background-color: green;
-    color: white;
-    font-size: .5em;
-} 
 
 
-#no-submit-button {
-    
-}*/
+/* ---- HOVER STATE SENSOR ---- */
+/* This media query removes hover states only on the quiz interface
+when there is no hover in the interface. That is otherwise distracting.
+It does not remove any other hover states. */
 
 @media (hover: none) {
     #quiz-section li:hover button {

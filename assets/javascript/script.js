@@ -79,7 +79,9 @@ Each is set up in the following way:
 --Initialization
 --Function expressions (comes before Initialization if it must)
 --Actions
---Function declarations */
+--Function declarations
+
+Each page function also has a clean-up local function, that tidies everything up on the way out. */
 
 
 

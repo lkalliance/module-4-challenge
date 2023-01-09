@@ -406,7 +406,10 @@ function saveResults(summary) {
 
         // if the initials value is empty, amscray
         // (recursion to avoid multiple listeners on the button)
-        if (jInitialsInput.val().length == 0) return;
+        if (jInitialsInput.val().trim().length == 0) {
+            jInitialsInput.val("");
+            return;
+        }
 
         // add the initials the user added and the date
         summary.inits = jInitialsInput.val();

@@ -185,7 +185,7 @@ only show for the reviewing status */
 
 /* The navigation menu for the quiz review is hidden rather than
 display: none, because I want to preserve the spacing */
-#quiz-section menu {
+#quiz-section nav {
     visibility: hidden;
     width: 50%; 
     margin: 0 auto;
@@ -193,7 +193,7 @@ display: none, because I want to preserve the spacing */
     white-space: nowrap;
 }
 
-#quiz-section.review menu {
+#quiz-section.review nav {
     visibility: visible;
 }
 
